@@ -1,0 +1,17 @@
+# private notes (not part of the product repo)
+/*.md
+!/README.md
+
+node_modules/
+.next/
+.vercel/
+.surfpool/
+*.log
+*.tsbuildinfo
+.DS_Store
+.env*
+!.env.example
+# never commit keypairs
+*keypair*.json
+id.json
+stocklana-*.json

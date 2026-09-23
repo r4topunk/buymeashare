@@ -1,0 +1,20 @@
+{
+  "name": "buymeashare-spike",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "description": "Mainnet feasibility spike: Jupiter swap into Tessera T-Tokens (Token-2022) + Jupiter Lock escrow",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@solana/spl-token": "^0.4.15",
+    "@solana/web3.js": "^1.99.0",
+    "bs58": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.2",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3"
+  }
+}

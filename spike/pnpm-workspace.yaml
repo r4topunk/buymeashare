@@ -1,0 +1,6 @@
+# pnpm >= 10 blocks dependency build scripts by default. Decide explicitly.
+allowBuilds:
+  esbuild: true
+  bigint-buffer: false
+  bufferutil: false
+  utf-8-validate: false
