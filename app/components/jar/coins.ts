@@ -1,3 +1,4 @@
+import type { Jar } from "@/lib/jar/types";
 import type { PriceSnapshot } from "@/lib/prices/types";
 import type { LockedTip } from "@/lib/tip/types";
 import { T_TOKENS, type TTokenId } from "@/lib/tokens";
@@ -34,6 +35,24 @@ export function holdingCoins(holdings: Array<{ token: TTokenId; amount: number }
   });
   // Interleave tokens so the pour mixes metals instead of layering them.
   return coins.sort((a, b) => rand(a.id, 11) - rand(b.id, 11));
+}
+
+/**
+ * Coins for a jar: one coin per tagged tip (id `tip-<signature>`, the same id the flying coin uses, so a tip
+ * confirmed this session is never drawn twice), plus log-scale coins for any balance that didn't come from tips.
+ */
+export function jarCoins(jar: Jar, prices: PriceSnapshot | null): CoinSpec[] {
+  const tips = jar.tips.filter((t) => t.memoTags.kind !== "claim").slice(0, MAX_HOLDING_COINS);
+  const tipCoins: CoinSpec[] = tips.map((t) => ({ id: `tip-${t.signature}`, token: t.token, r: TIP_COIN_R }));
+  const fromTips = (token: TTokenId) => tips.filter((t) => t.token === token).reduce((n, t) => n + t.amount, 0);
+  const residual = jar.holdings
+    .map((h) => ({ token: h.token, amount: h.amount - fromTips(h.token) }))
+    .filter((h) => {
+      const price = prices?.tokens[h.token]?.usd;
+      return h.amount > 0 && (price == null || h.amount * price >= 0.5);
+    });
+  const rest = holdingCoins(residual, prices).slice(0, Math.max(0, MAX_HOLDING_COINS - tipCoins.length));
+  return [...tipCoins, ...rest].sort((a, b) => rand(a.id, 11) - rand(b.id, 11));
 }
 
 /** Sealed coins for locked tips that haven't been claimed. */

@@ -147,7 +147,7 @@ export function TipForm({
     sfx.chime();
     haptic(isLocked ? HAPTIC.lock : HAPTIC.success);
     vessel?.confetti(s.token);
-    window.dispatchEvent(new CustomEvent("bmas:tip-landed", { detail: { usd: s.usd } }));
+    window.dispatchEvent(new CustomEvent("bmas:tip-landed", { detail: { usd: s.usd, signature, locked: isLocked } }));
     setLanded(true);
   }
 

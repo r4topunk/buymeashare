@@ -8,7 +8,7 @@ import type { Jar } from "@/lib/jar/types";
 import type { PriceSnapshot } from "@/lib/prices/types";
 import { T_TOKENS } from "@/lib/tokens";
 import { cn } from "@/lib/utils";
-import { holdingCoins } from "./coins";
+import { jarCoins } from "./coins";
 import { Vessel } from "./vessel";
 
 /**
@@ -52,7 +52,7 @@ const NO_COINS: never[] = [];
 
 function LoadedJar({ jar: jarPromise, prices, label }: { jar: Promise<Jar | null>; prices: PriceSnapshot | null; label: string }) {
   const jar = use(jarPromise);
-  const coins = useMemo(() => (jar ? holdingCoins(jar.holdings, prices) : []), [jar, prices]);
+  const coins = useMemo(() => (jar ? jarCoins(jar, prices) : []), [jar, prices]);
   const base = useMemo(() => {
     if (!jar || !prices) return null;
     let t = 0;
@@ -64,17 +64,23 @@ function LoadedJar({ jar: jarPromise, prices, label }: { jar: Promise<Jar | null
     return t;
   }, [jar, prices]);
 
-  // Confirmed tips this session count up immediately; once the refreshed jar includes them, the real total wins.
-  const [bonus, setBonus] = useState<{ base: number; usd: number } | null>(null);
+  // Confirmed unlocked tips this session count up immediately, keyed by signature. Once the refreshed jar lists a
+  // signature, the on-chain balance already includes it and the pending amount drops out (no double counting,
+  // whichever of refresh and landing happens first).
+  const [pending, setPending] = useState<Record<string, number>>({});
   useEffect(() => {
     const on = (e: Event) => {
-      const usd = (e as CustomEvent<{ usd: number }>).detail?.usd ?? 0;
-      setBonus((b) => ({ base: base ?? 0, usd: (b && b.base === (base ?? 0) ? b.usd : 0) + usd }));
+      const d = (e as CustomEvent<{ usd: number; signature?: string; locked?: boolean }>).detail;
+      if (!d?.signature || d.locked) return;
+      setPending((p) => ({ ...p, [d.signature as string]: d.usd }));
     };
     window.addEventListener("bmas:tip-landed", on);
     return () => window.removeEventListener("bmas:tip-landed", on);
-  }, [base]);
-  const total = base == null ? null : bonus && base <= bonus.base + 0.01 ? base + bonus.usd : base;
+  }, []);
+  const known = useMemo(() => new Set(jar?.tips.map((t) => t.signature) ?? []), [jar]);
+  const pendingUsd = Object.entries(pending).reduce((n, [sig, usd]) => (known.has(sig) ? n : n + usd), 0);
+  const bonus = pendingUsd > 0;
+  const total = base == null ? null : base + pendingUsd;
 
   const held = T_TOKENS.map((t) => ({ t, amount: jar?.holdings.find((h) => h.token === t.id)?.amount ?? 0 })).filter((r) => r.amount > 0);
   const summary = total != null ? `${label}: ${formatUsd(total)} in T-Tokens` : label;
