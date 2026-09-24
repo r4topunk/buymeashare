@@ -323,6 +323,7 @@
 
 /* ---------- Wallet adapter: match the app instead of the default purple ---------- */
 .wallet-slot .wallet-adapter-button {
+  white-space: nowrap;
   height: 2.25rem;
   padding: 0 0.875rem;
   border-radius: 9999px;

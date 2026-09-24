@@ -85,7 +85,7 @@ export function AmountDial({
           <PlusIcon />
         </StepButton>
       </div>
-      <div className="flex justify-center gap-1.5" role="group" aria-label="Quick amounts">
+      <div className="flex flex-wrap justify-center gap-1.5" role="group" aria-label="Quick amounts">
         {presets.map((p) => {
           const active = current === p;
           return (

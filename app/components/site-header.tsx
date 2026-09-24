@@ -10,7 +10,7 @@ export function SiteHeader() {
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-2 px-4 sm:px-6">
         <Link href="/" className="flex min-w-0 items-center gap-2 rounded-md font-semibold tracking-[-0.01em] outline-none focus-visible:ring-2 focus-visible:ring-brand/70">
           <Coin token="openai" size={20} />
-          <span className="truncate">{PRODUCT_NAME}</span>
+          <span className="truncate max-[359px]:sr-only">{PRODUCT_NAME}</span>
         </Link>
         <div className="flex items-center gap-2">
           <SoundToggle />
