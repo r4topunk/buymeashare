@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>App screenshots</title>
+<!-- Real screenshots from docs/images/screens/ (refresh them with docs/visuals/capture.mjs). -->
+<style>
+  @font-face { font-family: "Instrument Serif"; src: url("../../../app/assets/og/InstrumentSerif-Regular.ttf"); }
+  @font-face { font-family: "Instrument Serif"; font-style: italic; src: url("../../../app/assets/og/InstrumentSerif-Italic.ttf"); }
+  @font-face { font-family: "Geist"; font-weight: 500; src: url("../../../app/assets/og/Geist-Medium.ttf"); }
+  @font-face { font-family: "Geist"; font-weight: 600; src: url("../../../app/assets/og/Geist-SemiBold.ttf"); }
+  @font-face { font-family: "Geist Mono"; font-weight: 500; src: url("../../../app/assets/og/GeistMono-Medium.ttf"); }
+  :root {
+    --bg: #0f0c09; --fg: #f6f3ee; --muted: #b1a9a2; --faint: #8a827a; --brand: #fb9a3d;
+    --hair: rgba(255,255,255,0.1);
+  }
+  html, body { margin: 0; background: transparent; }
+  body { font-family: "Geist", system-ui, sans-serif; font-weight: 500; color: var(--fg); -webkit-font-smoothing: antialiased; }
+  #frame {
+    position: relative; width: 800px; box-sizing: border-box; padding: 28px 24px 22px; border-radius: 22px; overflow: hidden;
+    background: radial-gradient(60% 70% at 70% 30%, rgba(222,144,70,0.16), rgba(15,12,9,0) 60%), var(--bg);
+    box-shadow: inset 0 0 0 1px var(--hair);
+  }
+  header { display: flex; align-items: baseline; justify-content: space-between; margin: 0 6px 18px; }
+  h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 34px; letter-spacing: -0.015em; margin: 0; line-height: 1; }
+  .tag { font-size: 12.5px; color: var(--faint); letter-spacing: 0.03em; }
+  .wrap { display: flex; gap: 16px; align-items: flex-start; }
+  .phones { display: flex; gap: 14px; }
+  .right { flex: 1; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  figure { margin: 0; }
+  figcaption { margin-top: 8px; font-size: 11.5px; line-height: 1.35; color: var(--muted); text-align: center; }
+  figcaption b { color: var(--fg); font-weight: 600; }
+  /* Phone: dark bezel, rounded screen, island. */
+  .phone { position: relative; padding: 6px; border-radius: 30px; background: linear-gradient(160deg, #3a332d, #15120f 40%, #221d19); box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 20px 40px -18px rgba(0,0,0,0.9); }
+  .screen { position: relative; border-radius: 24px; overflow: hidden; background: #0f0c09; padding-top: 22px; }
+  .screen img { display: block; }
+  .screen::before { content: ""; position: absolute; left: 50%; top: 5px; width: 50px; height: 13px; transform: translateX(-50%); border-radius: 8px; background: #000; box-shadow: 0 0 0 1px rgba(255,255,255,0.05); }
+  .screen::after { content: "9:41"; position: absolute; left: 16px; top: 5px; font-size: 9px; line-height: 13px; font-weight: 600; color: var(--fg); }
+  /* Browser window. */
+  .browser { border-radius: 12px; overflow: hidden; background: #1d1916; box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 20px 40px -18px rgba(0,0,0,0.9); }
+  .bar { height: 24px; display: flex; align-items: center; gap: 5px; padding: 0 10px; background: linear-gradient(180deg, #2a2420, #221d19); border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .bar i { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.18); }
+  .bar .url { margin-left: 10px; flex: 1; height: 15px; border-radius: 6px; background: rgba(0,0,0,0.35); font-family: "Geist Mono", monospace; font-size: 9px; line-height: 15px; color: var(--faint); padding-left: 8px; white-space: nowrap; overflow: hidden; }
+  .browser img, .card img { display: block; width: 100%; }
+  .card { border-radius: 12px; overflow: hidden; box-shadow: 0 0 0 1px rgba(255,255,255,0.14), 0 20px 40px -18px rgba(0,0,0,0.9); }
+</style>
+</head>
+<body data-ready="0">
+<div id="frame">
+  <header>
+    <h2>The app</h2>
+    <div class="tag">Fresh screenshots of the dev build · mainnet data</div>
+  </header>
+  <div class="wrap">
+    <div class="phones">
+      <figure><div class="phone"><div class="screen"><img id="p1" src="../../images/screens/tip-mobile.png" alt=""></div></div>
+        <figcaption><b>Tip page</b><br>jar read from mainnet, token picker</figcaption></figure>
+      <figure><div class="phone"><div class="screen"><img id="p2" src="../../images/screens/tip-lock-mobile.png" alt=""></div></div>
+        <figcaption><b>Lock on</b><br>duration, deposit, Tessera warning</figcaption></figure>
+    </div>
+    <div class="right" id="right">
+      <figure><div class="browser"><div class="bar"><i></i><i></i><i></i><div class="url">/tip/EXvT…h7YW?name=Ana&amp;x=ana</div></div><img src="../../images/screens/jar-desktop.png" alt=""></div>
+        <figcaption><b>Desktop</b> · a real holder's jar after a (demo) tip lands</figcaption></figure>
+      <figure><div class="card"><img src="../../images/screens/og-card.png" alt=""></div>
+        <figcaption><b>Share card / Blink icon</b> · <span style="font-family:'Geist Mono';font-size:11px">/api/og</span>, one coin per tip</figcaption></figure>
+    </div>
+  </div>
+</div>
+<script>
+// Balance the columns: the phones take whatever width makes them as tall as the right column.
+const imgs = [...document.images];
+Promise.all(imgs.map((i) => (i.complete ? 1 : new Promise((r) => (i.onload = i.onerror = r))))).then(async () => {
+  await document.fonts.ready;
+  // Binary search the phone width until both columns measure the same height in the real layout.
+  const bw = 12, left = document.querySelector(".phones"), right = document.getElementById("right");
+  const set = (pw) => { for (const id of ["p1", "p2"]) { const el = document.getElementById(id); el.style.width = pw + "px"; el.closest("figure").style.width = pw + bw + "px"; } };
+  let lo = 120, hi = 280;
+  for (let i = 0; i < 30; i++) {
+    const mid = (lo + hi) / 2;
+    set(mid);
+    if (left.getBoundingClientRect().height < right.getBoundingClientRect().height) lo = mid; else hi = mid;
+  }
+  set(Math.round(lo * 2) / 2);
+  document.body.dataset.ready = "1";
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+{
+  "name": "buymeashare-readme-visuals",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "capture": "node capture.mjs",
+    "render": "node render.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.55.1",
+    "sharp": "^0.34.4"
+  }
+}

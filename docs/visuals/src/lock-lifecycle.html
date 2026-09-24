@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lock lifecycle</title>
+<style>
+  @font-face { font-family: "Instrument Serif"; src: url("../../../app/assets/og/InstrumentSerif-Regular.ttf"); }
+  @font-face { font-family: "Instrument Serif"; font-style: italic; src: url("../../../app/assets/og/InstrumentSerif-Italic.ttf"); }
+  @font-face { font-family: "Geist"; font-weight: 500; src: url("../../../app/assets/og/Geist-Medium.ttf"); }
+  @font-face { font-family: "Geist"; font-weight: 600; src: url("../../../app/assets/og/Geist-SemiBold.ttf"); }
+  @font-face { font-family: "Geist Mono"; font-weight: 500; src: url("../../../app/assets/og/GeistMono-Medium.ttf"); }
+  :root {
+    --bg: #0f0c09; --fg: #f6f3ee; --muted: #b1a9a2; --faint: #8a827a; --brand: #fb9a3d;
+    --hair: rgba(255,255,255,0.1);
+  }
+  html, body { margin: 0; background: transparent; }
+  body { font-family: "Geist", system-ui, sans-serif; font-weight: 500; color: var(--fg); -webkit-font-smoothing: antialiased; }
+  #frame {
+    position: relative; width: 800px; box-sizing: border-box; padding: 30px 32px 26px; border-radius: 22px; overflow: hidden;
+    background: radial-gradient(80% 80% at 0% 0%, rgba(222,144,70,0.10), rgba(15,12,9,0) 55%), var(--bg);
+    box-shadow: inset 0 0 0 1px var(--hair);
+    --jade: #4fc596; --warn: #f2b84b; --risk: #ff7a59;
+  }
+  header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 16px; }
+  h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 34px; letter-spacing: -0.015em; margin: 0; line-height: 1; }
+  .tag { font-size: 12.5px; color: var(--faint); letter-spacing: 0.03em; }
+  .card { border-radius: 18px; padding: 18px 18px 16px; box-shadow: inset 0 0 0 1px var(--hair); background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)); }
+  .card h3 { margin: 0 0 2px; font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+  .card .lede { margin: 0 0 12px; font-size: 12.5px; color: var(--muted); }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 4px; }
+  .step h4 { margin: 0 0 4px; font-size: 13.5px; font-weight: 600; }
+  .step p { margin: 0; font-size: 12px; line-height: 1.42; color: var(--muted); }
+  .step code { font-family: "Geist Mono", monospace; font-size: 11.5px; color: #ffd9a8; }
+  .risk { margin-top: 16px; border-radius: 18px; padding: 18px 18px 16px; background: linear-gradient(180deg, rgba(242,184,75,0.07), rgba(242,184,75,0.02)); box-shadow: inset 0 0 0 1px rgba(242,184,75,0.3); }
+  .risk h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 2px; font-size: 15px; font-weight: 600; color: #ffe2a3; }
+  .risk .lede { margin: 0 0 10px; font-size: 12.5px; color: var(--muted); }
+  .why { display: grid; grid-template-columns: 1.05fr 1fr; gap: 14px; margin-top: 10px; }
+  .why p { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--muted); }
+  .why p b { color: var(--fg); font-weight: 500; }
+  .quote { border-radius: 12px; padding: 10px 12px; font-size: 12px; line-height: 1.45; color: #efe3cf; background: rgba(40,33,12,0.7); box-shadow: inset 0 0 0 1px rgba(242,184,75,0.35); }
+  .quote .qh { display: flex; align-items: center; gap: 7px; font-weight: 600; color: #fff; margin-bottom: 3px; font-size: 12.5px; }
+  .quote .src { display: block; margin-top: 5px; color: var(--faint); font-size: 11px; }
+  svg text { font-family: "Geist"; }
+</style>
+</head>
+<body data-ready="0">
+<div id="frame">
+  <header>
+    <h2>Locking a tip</h2>
+    <div class="tag">Optional · fan picks the duration · max 5 years</div>
+  </header>
+
+  <div class="card">
+    <h3>Lifecycle of a locked tip</h3>
+    <p class="lede">Four transactions over the life of the lock. The cliff is set and checked against the chain clock, not the browser's.</p>
+    <svg id="life" width="700" height="44" viewBox="0 0 700 44" style="display:block"></svg>
+    <div class="steps">
+      <div class="step"><h4>1 · Tip locked</h4><p>Fan signs one tx: swap + <code>createVestingEscrowV2</code>. Fan pays ~0.0051 SOL of escrow rent.</p></div>
+      <div class="step"><h4>2 · Cliff</h4><p>The chain clock passes the cliff. Before that the app disables Claim (the program would move 0).</p></div>
+      <div class="step"><h4>3 · Creator claims</h4><p><code>claimV2</code> from the jar. The <span style="white-space:nowrap">T-Token</span> lands in the creator's wallet, net of the 0.2% fee.</p></div>
+      <div class="step"><h4>4 · Fan reclaims deposit</h4><p><code>closeVestingEscrow</code> after the full claim: the ~0.0051 SOL rent goes back to the fan.</p></div>
+    </div>
+  </div>
+
+  <div class="risk">
+    <h3><svg width="16" height="16" viewBox="0 0 16 16"><path d="M8 1.8 L15 14 H1 Z" fill="none" stroke="#f2b84b" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 6.2 V 9.6" stroke="#f2b84b" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11.9" r="0.95" fill="#f2b84b"/></svg>The risk: Tessera's redemption window</h3>
+    <p class="lede">T-Tokens are redeemed only during a 90-day window after a liquidity event (Tessera Terms 2.2). A lock can't be ended early.</p>
+    <svg id="win" width="700" height="222" viewBox="0 0 700 222" style="display:block"></svg>
+    <div class="why">
+      <p>Nobody knows <b>when</b> a liquidity event will happen, so any lock, short or long, could end up spanning the whole window. That's why the app shows the warning <b>whenever a lock is selected</b>, not only for long ones, and the Blink repeats it in its message.</p>
+      <div class="quote"><div class="qh"><svg width="14" height="14" viewBox="0 0 16 16"><path d="M8 1.8 L15 14 H1 Z" fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><path d="M8 6.2 V 9.6" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><circle cx="8" cy="11.9" r="0.95" fill="#fff"/></svg>Tessera redemption window</div>T-Tokens can only be redeemed during a 90-day window after Tessera exits the investment. If that window opens and closes while this tip is locked, the creator may lose it.<span class="src">Exact copy shown in the tip form and the Blink</span></div>
+    </div>
+  </div>
+</div>
+<script>
+const BRAND = "#fb9a3d", FG = "#f6f3ee", MUTED = "#b1a9a2", FAINT = "#8a827a", JADE = "#4fc596", WARN = "#f2b84b", RISK = "#ff7a59";
+
+// ---- Part A: lifecycle rail. Nodes sit at the start of each of the 4 step columns (700 px wide, 14 px gaps).
+const colW = (700 - 3 * 14) / 4, nodeX = [0, 1, 2, 3].map((i) => i * (colW + 14) + 9);
+function lockGlyph(x, y, c) {
+  return `<rect x="${x - 4.5}" y="${y - 1}" width="9" height="7" rx="1.6" fill="${c}"/><path d="M${x - 2.7} ${y - 1} V ${y - 3.2} a2.7 2.7 0 0 1 5.4 0 V ${y - 1}" fill="none" stroke="${c}" stroke-width="1.5"/>`;
+}
+document.getElementById("life").innerHTML = `
+  <defs>
+    <pattern id="seal" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="8" height="8" fill="rgba(251,154,61,0.30)"/><rect width="3" height="8" fill="rgba(251,154,61,0.55)"/></pattern>
+  </defs>
+  <line x1="${nodeX[0]}" y1="22" x2="692" y2="22" stroke="rgba(255,255,255,0.18)" stroke-width="2" stroke-linecap="round"/>
+  <rect x="${nodeX[0]}" y="15" width="${nodeX[1] - nodeX[0]}" height="14" rx="7" fill="url(#seal)" stroke="rgba(251,154,61,0.7)" stroke-width="1"/>
+  <text x="${(nodeX[0] + nodeX[1]) / 2 + 6}" y="10" font-size="10.5" fill="#ffc285" text-anchor="middle" letter-spacing="0.4">SEALED IN ESCROW</text>
+  <line x1="${nodeX[1]}" y1="22" x2="692" y2="22" stroke="rgba(79,197,150,0.55)" stroke-width="2" stroke-dasharray="1 5" stroke-linecap="round"/>
+  <text x="${(nodeX[1] + nodeX[2]) / 2 + 6}" y="10" font-size="10.5" fill="${JADE}" text-anchor="middle" letter-spacing="0.4">CLAIMABLE</text>
+  <circle cx="${nodeX[0]}" cy="22" r="9" fill="#2a1d10" stroke="${BRAND}" stroke-width="1.6"/>${lockGlyph(nodeX[0], 23, BRAND)}
+  <circle cx="${nodeX[1]}" cy="22" r="9" fill="#12261d" stroke="${JADE}" stroke-width="1.6"/><path d="M${nodeX[1] - 2} 16.5 V 27.5 M ${nodeX[1] - 2} 17 H ${nodeX[1] + 4} L ${nodeX[1] + 2.4} 19.2 L ${nodeX[1] + 4} 21.4 H ${nodeX[1] - 2}" fill="none" stroke="${JADE}" stroke-width="1.4" stroke-linejoin="round"/>
+  <circle cx="${nodeX[2]}" cy="22" r="9" fill="#2b2412" stroke="#e7b54c" stroke-width="1.6"/><circle cx="${nodeX[2]}" cy="22" r="4.2" fill="#e7b54c"/>
+  <circle cx="${nodeX[3]}" cy="22" r="9" fill="#1c1a18" stroke="${FG}" stroke-opacity="0.8" stroke-width="1.6"/><path d="M${nodeX[3] + 3.5} 19 A 4.3 4.3 0 1 0 ${nodeX[3] + 4.2} 23.5" fill="none" stroke="${FG}" stroke-width="1.5" stroke-linecap="round"/><path d="M${nodeX[3] + 1.2} 18.4 L ${nodeX[3] + 4} 18.8 L ${nodeX[3] + 3.8} 16" fill="none" stroke="${FG}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+`;
+
+// ---- Part B: redemption window vs three locks. Conceptual scale (event dates are unknown in advance).
+const X = { tip: 196, le: 300, proceeds: 324, start: 448, close: 572, end: 700 };
+const Y0 = 50, rowY = [104, 148, 192], H = 222;
+const rows = [
+  { end: 272, label: "Ends before the window", note: "claim, then redeem in time", c: JADE, icon: "ok" },
+  { end: 506, label: "Ends inside the window", note: "tight: redeem before it closes", c: WARN, icon: "warn" },
+  { end: 648, label: "Outlasts the window", note: "creator may lose the tip", c: RISK, icon: "risk" },
+];
+function icon(kind, x, y, c) {
+  const base = `<circle cx="${x}" cy="${y}" r="8.5" fill="#15110d" stroke="${c}" stroke-width="1.6"/>`;
+  if (kind === "ok") return base + `<path d="M${x - 3.6} ${y} L ${x - 1} ${y + 2.8} L ${x + 3.8} ${y - 2.8}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`;
+  if (kind === "warn") return base + `<path d="M${x} ${y - 4} V ${y + 1}" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/><circle cx="${x}" cy="${y + 3.7}" r="1.1" fill="${c}"/>`;
+  return base + `<path d="M${x - 3} ${y - 3} L ${x + 3} ${y + 3} M ${x + 3} ${y - 3} L ${x - 3} ${y + 3}" stroke="${c}" stroke-width="1.8" stroke-linecap="round"/>`;
+}
+document.getElementById("win").innerHTML = `
+  <defs>
+    <pattern id="lost" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="rgba(255,122,89,0.06)"/><rect width="2" height="7" fill="rgba(255,122,89,0.16)"/></pattern>
+    <pattern id="riskbar" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" fill="rgba(255,122,89,0.35)"/><rect width="3" height="7" fill="rgba(255,122,89,0.75)"/></pattern>
+    <linearGradient id="lockbar" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#ffc285"/><stop offset="1" stop-color="#d9772a"/></linearGradient>
+  </defs>
+  <!-- zones -->
+  <rect x="${X.start}" y="${Y0 - 8}" width="${X.close - X.start}" height="${H - Y0 + 6}" rx="6" fill="rgba(79,197,150,0.10)" stroke="rgba(79,197,150,0.45)" stroke-width="1"/>
+  <rect x="${X.close}" y="${Y0 - 8}" width="${X.end - X.close}" height="${H - Y0 + 6}" rx="6" fill="url(#lost)"/>
+  <!-- axis -->
+  <line x1="${X.tip}" y1="${Y0}" x2="${X.end - 4}" y2="${Y0}" stroke="rgba(255,255,255,0.22)" stroke-width="1.5"/>
+  ${[X.le, X.proceeds, X.start, X.close].map((x) => `<line x1="${x}" y1="${Y0 - 5}" x2="${x}" y2="${H - 4}" stroke="rgba(255,255,255,0.16)" stroke-dasharray="2 4"/>`).join("")}
+  <circle cx="${X.le}" cy="${Y0}" r="4" fill="${FG}"/><circle cx="${X.proceeds}" cy="${Y0}" r="3" fill="${MUTED}"/>
+  <circle cx="${X.start}" cy="${Y0}" r="4" fill="${JADE}"/><circle cx="${X.close}" cy="${Y0}" r="4" fill="${RISK}"/>
+  <text x="${X.le - 6}" y="16" font-size="11.5" font-weight="600" fill="${FG}" text-anchor="middle">Liquidity event</text>
+  <text x="${X.le - 6}" y="30" font-size="10.5" fill="${FAINT}" text-anchor="middle">Tessera exits · date unknown</text>
+  <text x="${(X.proceeds + X.start) / 2}" y="${Y0 + 17}" font-size="11" font-weight="600" fill="${MUTED}" text-anchor="middle">≤ 90 days</text>
+  <text x="${(X.proceeds + X.start) / 2}" y="${Y0 + 30}" font-size="10.5" fill="${FAINT}" text-anchor="middle">after proceeds</text>
+  <text x="${X.proceeds + 4}" y="${Y0 - 8}" font-size="10" fill="${FAINT}">proceeds</text>
+  <text x="${(X.start + X.close) / 2}" y="16" font-size="11.5" font-weight="600" fill="${JADE}" text-anchor="middle">Redemption window</text>
+  <text x="${(X.start + X.close) / 2}" y="30" font-size="10.5" fill="${FAINT}" text-anchor="middle">90 days</text>
+  <text x="${X.end - 4}" y="16" font-size="11.5" font-weight="600" fill="${RISK}" text-anchor="end">Window closed</text>
+  <text x="${X.end - 4}" y="30" font-size="10.5" fill="${FAINT}" text-anchor="end">unredeemed: forfeited</text>
+  <text x="0" y="${Y0 + 4}" font-size="10.5" fill="${FAINT}" letter-spacing="0.5">THREE LOCKS, SAME TIP DATE</text>
+  <text x="${X.tip}" y="${Y0 - 8}" font-size="10" fill="${FAINT}" text-anchor="middle">tip</text><line x1="${X.tip}" y1="${Y0 - 4}" x2="${X.tip}" y2="${Y0 + 4}" stroke="${FAINT}"/>
+  <!-- locks -->
+  ${rows.map((r, i) => {
+    const y = rowY[i], risk = r.icon === "risk";
+    return `<text x="0" y="${y - 2}" font-size="12.5" font-weight="600" fill="${FG}">${r.label}</text>
+    <text x="0" y="${y + 13}" font-size="11" fill="${r.c}">${r.note}</text>
+    <rect x="${X.tip}" y="${y - 7}" width="${r.end - X.tip}" height="14" rx="7" fill="${risk ? "url(#riskbar)" : "url(#lockbar)"}" ${risk ? `stroke="${RISK}" stroke-width="1.2"` : `opacity="0.9"`}/>
+    <circle cx="${X.tip}" cy="${y}" r="7" fill="#2a1d10" stroke="${BRAND}" stroke-width="1.4"/>${lockGlyph(X.tip, y + 1, BRAND)}
+    ${icon(r.icon, r.end + 14, y, r.c)}`;
+  }).join("")}
+`;
+document.fonts.ready.then(() => (document.body.dataset.ready = "1"));
+</script>
+</body>
+</html>

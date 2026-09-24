@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What's verified</title>
+<style>
+  @font-face { font-family: "Instrument Serif"; src: url("../../../app/assets/og/InstrumentSerif-Regular.ttf"); }
+  @font-face { font-family: "Instrument Serif"; font-style: italic; src: url("../../../app/assets/og/InstrumentSerif-Italic.ttf"); }
+  @font-face { font-family: "Geist"; font-weight: 500; src: url("../../../app/assets/og/Geist-Medium.ttf"); }
+  @font-face { font-family: "Geist"; font-weight: 600; src: url("../../../app/assets/og/Geist-SemiBold.ttf"); }
+  @font-face { font-family: "Geist Mono"; font-weight: 500; src: url("../../../app/assets/og/GeistMono-Medium.ttf"); }
+  :root {
+    --bg: #0f0c09; --fg: #f6f3ee; --muted: #b1a9a2; --faint: #8a827a; --brand: #fb9a3d;
+    --hair: rgba(255,255,255,0.1);
+  }
+  html, body { margin: 0; background: transparent; }
+  body { font-family: "Geist", system-ui, sans-serif; font-weight: 500; color: var(--fg); -webkit-font-smoothing: antialiased; }
+  #frame {
+    position: relative; width: 800px; box-sizing: border-box; padding: 30px 32px 28px; border-radius: 22px; overflow: hidden;
+    background: radial-gradient(70% 90% at 100% 0%, rgba(222,144,70,0.12), rgba(15,12,9,0) 55%), var(--bg);
+    box-shadow: inset 0 0 0 1px var(--hair);
+  }
+  header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; }
+  h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 34px; letter-spacing: -0.015em; margin: 0; line-height: 1; }
+  .tag { font-size: 12.5px; color: var(--faint); letter-spacing: 0.03em; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .c { position: relative; border-radius: 16px; padding: 14px 15px 13px; display: flex; flex-direction: column; min-height: 182px; box-sizing: border-box;
+       background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.018)); box-shadow: inset 0 0 0 1px var(--hair), inset 0 1px 0 rgba(255,255,255,0.05); }
+  .c.hi { background: linear-gradient(180deg, rgba(251,154,61,0.11), rgba(251,154,61,0.025)); box-shadow: inset 0 0 0 1px rgba(251,154,61,0.35), inset 0 1px 0 rgba(255,255,255,0.06); }
+  .k { display: flex; align-items: center; gap: 7px; font-size: 10.5px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--faint); }
+  .k .ok { width: 15px; height: 15px; flex: none; }
+  .big { font-family: "Instrument Serif", serif; font-size: 44px; line-height: 1; letter-spacing: -0.02em; margin: 12px 0 2px; white-space: nowrap; }
+  .big.sm { font-size: 34px; margin-top: 16px; }
+  .big.mono { font-family: "Geist Mono", monospace; font-size: 22px; letter-spacing: -0.01em; margin: 22px 0 8px; }
+  .gold { background: linear-gradient(180deg, #fff4c4 0%, #e7b54c 60%, #b17a26 110%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .unit { font-size: 13px; color: var(--fg); margin-bottom: 8px; }
+  .d { font-size: 11.8px; line-height: 1.45; color: var(--muted); }
+  .d code, .src code { font-family: "Geist Mono", monospace; font-size: 11px; color: #ffd9a8; }
+  .nw { white-space: nowrap; }
+  .src { margin-top: auto; padding-top: 10px; font-size: 11px; color: var(--faint); }
+  .src code { color: var(--muted); }
+</style>
+</head>
+<body data-ready="0">
+<div id="frame">
+  <header>
+    <h2>What's verified</h2>
+    <div class="tag">Measured, not assumed · numbers from spike/README.md and the app</div>
+  </header>
+  <div class="grid">
+    <div class="c">
+      <div class="k" data-ok>App e2e · Surfpool fork</div>
+      <div class="big">7/7</div>
+      <div class="unit">steps pass</div>
+      <div class="d"><span class="nw">USDC→T-OpenAI</span>, <span class="nw">SOL→T-SpaceX</span>, 120 s locked tip, listLocks, claim after time travel, reclaim deposit, jar.</div>
+      <div class="src"><code>pnpm e2e:surfpool</code></div>
+    </div>
+    <div class="c hi">
+      <div class="k" data-ok>Mainnet tip · 2026-09-24</div>
+      <div class="big sm gold">0.000959413</div>
+      <div class="unit">T-OpenAI received for $1 of SOL</div>
+      <div class="d">Creator <code>DrPU…YFsk</code>, net of the 0.2% fee. One v0 tx, memo <code>buymeashare:v0</code>, network fee 0.000011 SOL.</div>
+      <div class="src">tx <code>2mHQrsc5…8ZMCjLM</code></div>
+    </div>
+    <div class="c">
+      <div class="k" data-ok>Escrow vs 0.2% fee</div>
+      <div class="big">100%</div>
+      <div class="unit">backed, every time</div>
+      <div class="d"><code>createVestingEscrowV2</code> pulls a fee-inclusive amount: the escrow holds 944,663 = <code>cliffUnlockAmount</code> exactly.</div>
+      <div class="src">spike RESULTS #4, #5, #6</div>
+    </div>
+    <div class="c">
+      <div class="k" data-ok>Claim gated by chain clock</div>
+      <div class="big">0</div>
+      <div class="unit">moved by a claim before the cliff</div>
+      <div class="d">The program accepts an early claim and moves nothing, so the app disables Claim until chain time passes the cliff.</div>
+      <div class="src">spike RESULTS #7, #8</div>
+    </div>
+    <div class="c">
+      <div class="k" data-ok>Escrow rent is refundable</div>
+      <div class="big">0.00511<span style="font-size:24px"> SOL</span></div>
+      <div class="unit">back to the fan</div>
+      <div class="d"><code>closeVestingEscrow</code> after the full claim returns 5,108,640 lamports (escrow + escrow token account).</div>
+      <div class="src">spike RESULTS #9</div>
+    </div>
+    <div class="c">
+      <div class="k" data-ok>Solana Action / Blink</div>
+      <div class="big mono">sigVerify: true</div>
+      <div class="unit">POST txs simulate on the fork</div>
+      <div class="d">Same builder as the app. GET shape and POST guard rails checked; locked tips carry the Tessera warning.</div>
+      <div class="src"><code>pnpm blink:simulate</code></div>
+    </div>
+  </div>
+</div>
+<script>
+document.querySelectorAll("[data-ok]").forEach((el) => el.insertAdjacentHTML("afterbegin",
+  `<svg class="ok" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7.2" fill="rgba(79,197,150,0.16)" stroke="#4fc596" stroke-width="1.2"/><path d="M4.8 8.2 L 7 10.3 L 11.3 5.9" fill="none" stroke="#4fc596" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`));
+document.fonts.ready.then(() => (document.body.dataset.ready = "1"));
+</script>
+</body>
+</html>

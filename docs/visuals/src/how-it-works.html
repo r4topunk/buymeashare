@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>How a tip works</title>
+<style>
+  @font-face { font-family: "Instrument Serif"; src: url("../../../app/assets/og/InstrumentSerif-Regular.ttf"); }
+  @font-face { font-family: "Instrument Serif"; font-style: italic; src: url("../../../app/assets/og/InstrumentSerif-Italic.ttf"); }
+  @font-face { font-family: "Geist"; font-weight: 500; src: url("../../../app/assets/og/Geist-Medium.ttf"); }
+  @font-face { font-family: "Geist"; font-weight: 600; src: url("../../../app/assets/og/Geist-SemiBold.ttf"); }
+  @font-face { font-family: "Geist Mono"; font-weight: 500; src: url("../../../app/assets/og/GeistMono-Medium.ttf"); }
+  :root {
+    --bg: #0f0c09; --fg: #f6f3ee; --muted: #b1a9a2; --faint: #8a827a; --brand: #fb9a3d;
+    --hair: rgba(255,255,255,0.1);
+  }
+  html, body { margin: 0; background: transparent; }
+  body { font-family: "Geist", system-ui, sans-serif; font-weight: 500; color: var(--fg); -webkit-font-smoothing: antialiased; }
+  #frame {
+    position: relative; width: 800px; box-sizing: border-box; padding: 30px 32px 28px; border-radius: 22px; overflow: hidden;
+    background: radial-gradient(90% 120% at 100% 0%, rgba(222,144,70,0.13), rgba(15,12,9,0) 55%), var(--bg);
+    box-shadow: inset 0 0 0 1px var(--hair);
+  }
+  header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 20px; }
+  h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 34px; letter-spacing: -0.015em; margin: 0; line-height: 1; }
+  h2 em { color: var(--brand); }
+  .tag { font-size: 12.5px; color: var(--faint); letter-spacing: 0.03em; }
+  .row { display: grid; grid-template-columns: 1fr 22px 1fr 22px 1fr 22px 1fr; align-items: stretch; }
+  .card {
+    border-radius: 16px; padding: 14px 14px 16px; min-height: 206px; box-sizing: border-box;
+    background: linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+    box-shadow: inset 0 0 0 1px var(--hair), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  .card.tx { box-shadow: inset 0 0 0 1px rgba(251,154,61,0.28), inset 0 1px 0 rgba(255,255,255,0.05); background: linear-gradient(180deg, rgba(251,154,61,0.07), rgba(251,154,61,0.015)); }
+  .num { font-family: "Geist Mono", monospace; font-size: 11px; color: var(--faint); letter-spacing: 0.08em; }
+  .icon { height: 78px; display: flex; align-items: center; justify-content: center; margin: 4px 0 10px; }
+  .card h3 { font-size: 15px; font-weight: 600; margin: 0 0 6px; letter-spacing: -0.01em; line-height: 1.2; }
+  .card p { margin: 0; font-size: 12.5px; line-height: 1.42; color: var(--muted); }
+  .card p b { color: var(--fg); font-weight: 500; }
+  .card code { font-family: "Geist Mono", monospace; font-size: 11.5px; color: #ffd9a8; }
+  .nw { white-space: nowrap; }
+  .arrow { display: flex; align-items: center; justify-content: center; }
+  .bracket { display: grid; grid-template-columns: 1fr 22px 1fr 22px 1fr 22px 1fr; margin-top: 12px; }
+  .bracket .b { grid-column: 3 / 8; position: relative; height: 26px; }
+  .bracket .b::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 10px; border: 1.5px solid rgba(251,154,61,0.55); border-top: 0; border-radius: 0 0 10px 10px; }
+  .bracket .b span { position: absolute; left: 50%; top: 14px; transform: translateX(-50%); white-space: nowrap; font-size: 12.5px; color: #ffd9a8; background: var(--bg); padding: 0 10px; }
+  .bracket .a { grid-column: 1 / 2; font-size: 12px; color: var(--faint); padding-top: 12px; text-align: center; }
+</style>
+</head>
+<body data-ready="0">
+<div id="frame">
+  <header>
+    <h2>How a tip works</h2>
+    <div class="tag">No signup · no database · no custom program</div>
+  </header>
+  <div class="row">
+    <div class="card">
+      <div class="num">01</div>
+      <div class="icon" id="i1"></div>
+      <h3>Share your link</h3>
+      <p>The link <b>is</b> the creator's wallet: <code>/tip/&lt;wallet&gt;</code>. Nothing to sign up for.</p>
+    </div>
+    <div class="arrow" data-arrow></div>
+    <div class="card tx">
+      <div class="num">02</div>
+      <div class="icon" id="i2"></div>
+      <h3>Fan tips in SOL or USDC</h3>
+      <p>Picks <span class="nw">T-OpenAI</span>, <span class="nw">T-Kalshi</span> or <span class="nw">T-SpaceX</span> and an amount, from <b>$1</b>. One wallet signature.</p>
+    </div>
+    <div class="arrow" data-arrow></div>
+    <div class="card tx">
+      <div class="num">03</div>
+      <div class="icon" id="i3"></div>
+      <h3>Jupiter swaps it</h3>
+      <p>Routes SOL or USDC into the T-Token <b>inside the same transaction</b>. No custody in between.</p>
+    </div>
+    <div class="arrow" data-arrow></div>
+    <div class="card tx">
+      <div class="num">04</div>
+      <div class="icon" id="i4"></div>
+      <h3>Lands in the creator's jar</h3>
+      <p>Straight to their wallet, or <b>sealed in a Jupiter Lock</b> escrow they claim after the cliff.</p>
+    </div>
+  </div>
+  <div class="bracket">
+    <div class="a">once, by the creator</div>
+    <div class="b"><span>one v0 transaction, signed once by the fan</span></div>
+  </div>
+</div>
+<script>
+// ---- Brand metals and jar geometry (mirrors app/lib/fx/metals.ts and components/jar/vessel-geometry.ts) ----
+const METALS = {
+  openai: { hi: "#fff4c4", mid: "#e7b54c", lo: "#8d5d17", edge: "#5b3a0c", ink: "rgba(92,56,8,0.72)", glyph: "O", sym: "T-OpenAI", co: "gold" },
+  kalshi: { hi: "#dcfff0", mid: "#4fc596", lo: "#176446", edge: "#0b3b29", ink: "rgba(8,58,38,0.72)", glyph: "K", sym: "T-Kalshi", co: "jade" },
+  spacex: { hi: "#ffffff", mid: "#b8c2d0", lo: "#566172", edge: "#2c3440", ink: "rgba(28,36,48,0.72)", glyph: "S", sym: "T-SpaceX", co: "platinum" },
+};
+const CX = 150, RIM = { top: 26, bottom: 46, half: 72 }, NECK = { top: 46, bottom: 62, half: 64 }, BODY = { top: 118, half: 112, bottom: 324, corner: 40 }, GLASS = 7;
+const INNER = { bodyHalf: BODY.half - GLASS, bottom: BODY.bottom - GLASS, corner: BODY.corner - GLASS };
+const JAR_PATH = [
+  `M ${CX - NECK.half} ${NECK.top}`, `L ${CX - NECK.half} ${NECK.bottom}`,
+  `C ${CX - NECK.half} ${NECK.bottom + 30} ${CX - BODY.half} ${NECK.bottom + 22} ${CX - BODY.half} ${BODY.top}`,
+  `L ${CX - BODY.half} ${BODY.bottom - BODY.corner}`, `Q ${CX - BODY.half} ${BODY.bottom} ${CX - BODY.half + BODY.corner} ${BODY.bottom}`,
+  `L ${CX + BODY.half - BODY.corner} ${BODY.bottom}`, `Q ${CX + BODY.half} ${BODY.bottom} ${CX + BODY.half} ${BODY.bottom - BODY.corner}`,
+  `L ${CX + BODY.half} ${BODY.top}`, `C ${CX + BODY.half} ${NECK.bottom + 22} ${CX + NECK.half} ${NECK.bottom + 30} ${CX + NECK.half} ${NECK.bottom}`,
+  `L ${CX + NECK.half} ${NECK.top}`,
+].join(" ");
+function rand(id, salt) {
+  let h = 2166136261 ^ salt;
+  for (let i = 0; i < id.length; i++) h = Math.imul(h ^ id.charCodeAt(i), 16777619);
+  h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+}
+function coinDefs(p) {
+  const bodies = Object.entries(METALS).map(([t, m]) => `<radialGradient id="${p}b-${t}" cx="0.32" cy="0.28" r="0.99"><stop offset="0" stop-color="${m.hi}"/><stop offset="0.42" stop-color="${m.mid}"/><stop offset="1" stop-color="${m.lo}"/></radialGradient>`).join("");
+  return `${bodies}
+  <linearGradient id="${p}bevel" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.75"/><stop offset="0.5" stop-color="#fff" stop-opacity="0.05"/><stop offset="1" stop-color="#000" stop-opacity="0.45"/></linearGradient>
+  <linearGradient id="${p}field" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0.28"/><stop offset="1" stop-color="#fff" stop-opacity="0.55"/></linearGradient>
+  <radialGradient id="${p}glint" cx="0.29" cy="0.25" r="0.28"><stop offset="0" stop-color="#fff" stop-opacity="0.65"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <radialGradient id="${p}shade" cx="0.5" cy="0.5" r="0.5"><stop offset="0.6" stop-color="#000" stop-opacity="0.55"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>`;
+}
+function coin(p, token, x, y, r, angle = 0) {
+  const m = METALS[token], lw = r * 0.11, tick = r * 0.035, reed = 2 * Math.PI * r * 0.835;
+  return `<g>
+  <circle cx="${x}" cy="${y + r * 0.12}" r="${r * 1.12}" fill="url(#${p}shade)"/>
+  <circle cx="${x}" cy="${y}" r="${r}" fill="url(#${p}b-${token})"/>
+  <circle cx="${x}" cy="${y}" r="${r - 0.4}" fill="none" stroke="${m.edge}" stroke-opacity="0.5" stroke-width="0.8"/>
+  <circle cx="${x}" cy="${y}" r="${r - lw / 2}" fill="none" stroke="url(#${p}bevel)" stroke-width="${lw}"/>
+  <circle cx="${x}" cy="${y}" r="${r * 0.835}" fill="none" stroke="#000" stroke-opacity="0.16" stroke-width="${r * 0.07}" stroke-dasharray="${tick} ${reed / 36 - tick}"/>
+  <circle cx="${x}" cy="${y}" r="${r * 0.74}" fill="none" stroke="url(#${p}field)" stroke-width="${Math.max(0.6, r * 0.05)}"/>
+  <g transform="rotate(${angle} ${x} ${y})" font-family="Geist" font-weight="600" font-size="${r}" text-anchor="middle" dominant-baseline="central">
+    <text x="${x + r * 0.04}" y="${y + r * 0.09}" fill="rgba(255,255,255,0.5)">${m.glyph}</text>
+    <text x="${x}" y="${y + r * 0.04}" fill="${m.ink}">${m.glyph}</text>
+  </g>
+  <circle cx="${x}" cy="${y}" r="${r}" fill="url(#${p}glint)"/></g>`;
+}
+function coinSvg(token, size) {
+  const r = 20;
+  return `<svg width="${size}" height="${size}" viewBox="-22 -22 44 44"><defs>${coinDefs("c" + token)}</defs>${coin("c" + token, token, 0, 0, r)}</svg>`;
+}
+function floorY(x, r) {
+  const left = CX - INNER.bodyHalf + INNER.corner, right = CX + INNER.bodyHalf - INNER.corner, cy = INNER.bottom - INNER.corner, rr = INNER.corner - r;
+  const dx = x < left ? left - x : x > right ? x - right : 0;
+  return dx > 0 ? cy + Math.sqrt(Math.max(0, rr * rr - dx * dx)) : INNER.bottom - r;
+}
+function pour(coins) {
+  const placed = [], minX = CX - INNER.bodyHalf, maxX = CX + INNER.bodyHalf;
+  for (const c of coins) {
+    const r = c.r, xs = [], ys = [];
+    for (let x = minX + r; x <= maxX - r; x += 1.5) {
+      let y = floorY(x, r);
+      for (const q of placed) { const dx = x - q.x, d = r + q.r - 0.6; if (Math.abs(dx) < d) y = Math.min(y, q.y - Math.sqrt(d * d - dx * dx)); }
+      xs.push(x); ys.push(y);
+    }
+    const spread = Math.min(1, coins.length / 12), target = CX + (rand(c.id, 21) - 0.5) * (maxX - minX - 2 * r) * spread;
+    let best = -1, bestScore = -Infinity;
+    for (let i = 0; i < xs.length; i++) {
+      const rest = (i === 0 || ys[i] >= ys[i - 1]) && (i === xs.length - 1 || ys[i] >= ys[i + 1]);
+      if (!rest) continue;
+      const s = ys[i] - Math.abs(xs[i] - target) * 0.05;
+      if (s > bestScore) { bestScore = s; best = i; }
+    }
+    if (best < 0 || ys[best] - r < BODY.top + 6) break;
+    placed.push({ ...c, x: xs[best], y: ys[best] });
+  }
+  return placed;
+}
+/** Glass jar with a poured pile and one coin dropping in (same layers as app/api/og/art.tsx). */
+function jarSvg({ n, mix, drop, p = "j", r0 = 15, rk = 5, vb = "-40 -96 380 464" }) {
+  const specs = [];
+  for (let i = 0; i < n; i++) {
+    const id = `${p}-${i}`, k = rand(id, 3);
+    const token = k < mix[0] ? "openai" : k < mix[0] + mix[1] ? "kalshi" : "spacex";
+    specs.push({ id, token, r: r0 + Math.floor(rand(id, 7) * rk) });
+  }
+  const pile = pour(specs);
+  const coins = pile.map((c) => coin(p, c.token, c.x, c.y, c.r, (rand(c.id, 11) - 0.5) * 70)).join("");
+  const d = drop ? `<circle cx="${drop.x}" cy="${drop.y}" r="${drop.r * 2.4}" fill="url(#${p}halo)"/>
+    ${[-0.45, 0, 0.45].map((k, i) => `<line x1="${drop.x + k * drop.r}" y1="${drop.y - drop.r - 8 - i * 3}" x2="${drop.x + k * drop.r}" y2="${drop.y - drop.r - 38 + i * 6}" stroke="url(#${p}trail)" stroke-width="${i === 1 ? 2.2 : 1.4}" stroke-linecap="round"/>`).join("")}
+    ${coin(p, drop.token, drop.x, drop.y, drop.r, -8)}` : "";
+  return `<svg viewBox="${vb}" width="100%" style="display:block;overflow:visible">
+  <defs>${coinDefs(p)}
+    <linearGradient id="${p}glass" x1="0" x2="1"><stop offset="0" stop-color="#cfebe9" stop-opacity="0.2"/><stop offset="0.18" stop-color="#e4f3f1" stop-opacity="0.05"/><stop offset="0.82" stop-color="#e4f3f1" stop-opacity="0.04"/><stop offset="1" stop-color="#cfebe9" stop-opacity="0.16"/></linearGradient>
+    <radialGradient id="${p}floor" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#000" stop-opacity="0.7"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+    <radialGradient id="${p}bounce" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#fb9a3d" stop-opacity="0.34"/><stop offset="1" stop-color="#fb9a3d" stop-opacity="0"/></radialGradient>
+    <linearGradient id="${p}streak" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.36"/><stop offset="0.55" stop-color="#fff" stop-opacity="0.13"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+    <linearGradient id="${p}rim" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.22"/><stop offset="1" stop-color="#fff" stop-opacity="0.04"/></linearGradient>
+    <linearGradient id="${p}edge" x1="0" x2="1"><stop offset="0" stop-color="#fff" stop-opacity="0.55"/><stop offset="0.5" stop-color="#fff" stop-opacity="0.16"/><stop offset="1" stop-color="#fff" stop-opacity="0.45"/></linearGradient>
+    <linearGradient id="${p}trail" x1="0" x2="0" y1="1" y2="0"><stop offset="0" stop-color="#ffe2a3" stop-opacity="0.55"/><stop offset="1" stop-color="#ffe2a3" stop-opacity="0"/></linearGradient>
+    <radialGradient id="${p}halo" cx="0.5" cy="0.5" r="0.5"><stop offset="0" stop-color="#fb9a3d" stop-opacity="0.3"/><stop offset="1" stop-color="#fb9a3d" stop-opacity="0"/></radialGradient>
+  </defs>
+  <ellipse cx="${CX}" cy="${BODY.bottom + 7}" rx="${BODY.half + 34}" ry="18" fill="url(#${p}floor)"/>
+  <ellipse cx="${CX}" cy="${BODY.bottom + 4}" rx="${BODY.half - 6}" ry="10" fill="url(#${p}bounce)"/>
+  <path d="${JAR_PATH} Z" fill="url(#${p}glass)"/>
+  <path d="M ${CX - BODY.half + 16} ${BODY.bottom - 10} Q ${CX} ${BODY.bottom - 2} ${CX + BODY.half - 16} ${BODY.bottom - 10}" stroke="#fff" stroke-opacity="0.07" stroke-width="10" fill="none" stroke-linecap="round"/>
+  ${coins}${d}
+  <path d="${JAR_PATH}" fill="none" stroke="url(#${p}edge)" stroke-width="1.8"/>
+  <path d="${JAR_PATH}" fill="none" stroke="#fff" stroke-opacity="0.05" stroke-width="7"/>
+  <rect x="${CX - BODY.half + 14}" y="${BODY.top + 8}" width="13" height="150" rx="6.5" fill="url(#${p}streak)"/>
+  <rect x="${CX - BODY.half + 33}" y="${BODY.top + 18}" width="4" height="96" rx="2" fill="url(#${p}streak)" opacity="0.7"/>
+  <rect x="${CX + BODY.half - 17}" y="${BODY.top + 20}" width="5" height="120" rx="2.5" fill="url(#${p}streak)" opacity="0.45"/>
+  <path d="M ${CX - NECK.half - 4} ${NECK.bottom + 18} Q ${CX - BODY.half + 20} ${NECK.bottom + 30} ${CX - BODY.half + 12} ${BODY.top - 4}" stroke="#fff" stroke-opacity="0.32" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M ${CX - BODY.half + 22} ${BODY.bottom - 5} Q ${CX} ${BODY.bottom + 1} ${CX + BODY.half - 22} ${BODY.bottom - 5}" stroke="#fff" stroke-opacity="0.24" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <rect x="${CX - RIM.half}" y="${RIM.top}" width="${RIM.half * 2}" height="${RIM.bottom - RIM.top}" rx="7" fill="url(#${p}rim)" stroke="#fff" stroke-opacity="0.42" stroke-width="1.2"/>
+  <path d="M ${CX - RIM.half + 8} ${RIM.top + 4} L ${CX + RIM.half - 8} ${RIM.top + 4}" stroke="#fff" stroke-opacity="0.58" stroke-width="1.4" stroke-linecap="round"/>
+  </svg>`;
+}
+
+const stroke = `fill="none" stroke="#f6f3ee" stroke-opacity="0.9" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"`;
+function plainCoin(x, y, r, label, tint) {
+  return `<g><circle cx="${x}" cy="${y + 1.5}" r="${r + 1}" fill="#000" opacity="0.45"/>
+    <circle cx="${x}" cy="${y}" r="${r}" fill="url(#pc-${tint})"/>
+    <circle cx="${x}" cy="${y}" r="${r - 0.8}" fill="none" stroke="#fff" stroke-opacity="0.22" stroke-width="1.2"/>
+    <circle cx="${x}" cy="${y}" r="${r * 0.76}" fill="none" stroke="#fff" stroke-opacity="0.08" stroke-width="1"/>
+    <text x="${x}" y="${y + 0.5}" font-family="Geist Mono" font-weight="500" font-size="${label.length > 3 ? r * 0.52 : r * 0.62}" fill="#f6f3ee" text-anchor="middle" dominant-baseline="central">${label}</text></g>`;
+}
+const plainDefs = `<radialGradient id="pc-sol" cx="0.35" cy="0.3" r="0.9"><stop offset="0" stop-color="#6a5a8f"/><stop offset="1" stop-color="#2a2238"/></radialGradient>
+  <radialGradient id="pc-usdc" cx="0.35" cy="0.3" r="0.9"><stop offset="0" stop-color="#4f6f98"/><stop offset="1" stop-color="#1c2738"/></radialGradient>`;
+
+// 01: wallet with a link badge.
+document.getElementById("i1").innerHTML = `<svg width="120" height="78" viewBox="0 0 120 78">
+  <rect x="26" y="18" width="64" height="44" rx="9" ${stroke}/>
+  <path d="M34 18 L 70 8 L 74 18" ${stroke}/>
+  <rect x="66" y="32" width="24" height="16" rx="5" ${stroke}/>
+  <circle cx="74" cy="40" r="2.4" fill="#f6f3ee"/>
+  <g transform="translate(84 52)">
+    <circle r="15" fill="#fb9a3d"/><circle r="15" fill="none" stroke="#000" stroke-opacity="0.25"/>
+    <g fill="none" stroke="#2a1606" stroke-width="2.2" stroke-linecap="round">
+      <path d="M-2 3 L -5 6 a3.6 3.6 0 0 1 -5 -5 l 3 -3"/><path d="M2 -3 L 5 -6 a3.6 3.6 0 0 1 5 5 l -3 3"/><path d="M-3.5 3.5 L 3.5 -3.5"/>
+    </g>
+  </g></svg>`;
+
+// 02: two pay coins.
+document.getElementById("i2").innerHTML = `<svg width="120" height="78" viewBox="0 0 120 78"><defs>${plainDefs}</defs>
+  ${plainCoin(36, 38, 21, "SOL", "sol")}${plainCoin(84, 42, 21, "USDC", "usdc")}</svg>`;
+
+// 03: pay coin -> swap arrows -> T-OpenAI coin.
+document.getElementById("i3").innerHTML = `<svg width="130" height="78" viewBox="0 0 130 78"><defs>${plainDefs}${coinDefs("s")}
+  <marker id="ah" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#fb9a3d"/></marker></defs>
+  ${plainCoin(24, 40, 17, "SOL", "sol")}
+  <path d="M46 32 Q 65 18 84 32" fill="none" stroke="#fb9a3d" stroke-width="2" stroke-linecap="round" marker-end="url(#ah)"/>
+  <path d="M84 48 Q 65 62 46 48" fill="none" stroke="#fb9a3d" stroke-opacity="0.35" stroke-width="2" stroke-dasharray="3 4" stroke-linecap="round"/>
+  <text x="65" y="43" font-family="Geist" font-weight="600" font-size="9" fill="#ffd9a8" text-anchor="middle" dominant-baseline="central" letter-spacing="0.5">JUP</text>
+  ${coin("s", "openai", 105, 40, 19)}</svg>`;
+
+// 04: small jar with coins and a padlock badge.
+document.getElementById("i4").innerHTML = `<div style="position:relative;width:84px;height:80px">
+  <div style="position:absolute;left:6px;top:0;width:70px">${jarSvg({ n: 9, mix: [0.6, 0.25], p: "m", r0: 30, rk: 6, vb: "20 18 260 320" })}</div>
+  <svg width="30" height="30" viewBox="-15 -15 30 30" style="position:absolute;right:-6px;bottom:4px">
+    <circle r="14" fill="#2a1d10"/><circle r="14" fill="none" stroke="#fb9a3d" stroke-width="1.6"/>
+    <rect x="-5.5" y="-1.5" width="11" height="8.5" rx="2" fill="#fb9a3d"/>
+    <path d="M-3.4 -1.5 V -4 a3.4 3.4 0 0 1 6.8 0 V -1.5" fill="none" stroke="#fb9a3d" stroke-width="1.8"/>
+  </svg></div>`;
+
+document.querySelectorAll("[data-arrow]").forEach((el) => {
+  el.innerHTML = `<svg width="18" height="18" viewBox="0 0 18 18"><path d="M3 9 H 14 M 10 4.5 L 14.5 9 L 10 13.5" fill="none" stroke="#fb9a3d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+});
+document.fonts.ready.then(() => (document.body.dataset.ready = "1"));
+</script>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>One transaction</title>
+<style>
+  @font-face { font-family: "Instrument Serif"; src: url("../../../app/assets/og/InstrumentSerif-Regular.ttf"); }
+  @font-face { font-family: "Instrument Serif"; font-style: italic; src: url("../../../app/assets/og/InstrumentSerif-Italic.ttf"); }
+  @font-face { font-family: "Geist"; font-weight: 500; src: url("../../../app/assets/og/Geist-Medium.ttf"); }
+  @font-face { font-family: "Geist"; font-weight: 600; src: url("../../../app/assets/og/Geist-SemiBold.ttf"); }
+  @font-face { font-family: "Geist Mono"; font-weight: 500; src: url("../../../app/assets/og/GeistMono-Medium.ttf"); }
+  :root {
+    --bg: #0f0c09; --fg: #f6f3ee; --muted: #b1a9a2; --faint: #8a827a; --brand: #fb9a3d;
+    --hair: rgba(255,255,255,0.1);
+  }
+  html, body { margin: 0; background: transparent; }
+  body { font-family: "Geist", system-ui, sans-serif; font-weight: 500; color: var(--fg); -webkit-font-smoothing: antialiased; }
+  #frame {
+    position: relative; width: 800px; box-sizing: border-box; padding: 30px 32px 26px; border-radius: 22px; overflow: hidden;
+    background: radial-gradient(80% 90% at 0% 0%, rgba(222,144,70,0.10), rgba(15,12,9,0) 55%), var(--bg);
+    box-shadow: inset 0 0 0 1px var(--hair);
+    --gold: #e7b54c; --gold-hi: #ffe2a3;
+  }
+  header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 18px; }
+  h2 { font-family: "Instrument Serif", serif; font-weight: 400; font-size: 34px; letter-spacing: -0.015em; margin: 0; line-height: 1; }
+  .tag { font-size: 12.5px; color: var(--faint); letter-spacing: 0.03em; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .col { border-radius: 18px; padding: 16px 16px 14px; box-shadow: inset 0 0 0 1px var(--hair); background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015)); display: flex; flex-direction: column; }
+  .col h3 { display: flex; align-items: center; gap: 9px; margin: 0 0 3px; font-size: 16px; font-weight: 600; letter-spacing: -0.01em; }
+  .col h3 .sw { width: 10px; height: 10px; border-radius: 3px; }
+  .col .lede { font-size: 12.5px; color: var(--muted); margin: 0 0 12px; }
+  .ix { position: relative; display: grid; grid-template-columns: 22px 1fr; gap: 10px; padding: 9px 12px 10px 10px; border-radius: 12px; background: rgba(255,255,255,0.035); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07); margin-bottom: 6px; }
+  .ix.key { background: rgba(251,154,61,0.08); box-shadow: inset 0 0 0 1px rgba(251,154,61,0.35); }
+  .ix .n { font-family: "Geist Mono", monospace; font-size: 11px; color: var(--faint); padding-top: 2px; }
+  .ix .top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .prog { font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--faint); }
+  .ixn { font-family: "Geist Mono", monospace; font-size: 13px; color: var(--fg); }
+  .ix .d { font-size: 12px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+  .ix .d code { font-family: "Geist Mono", monospace; font-size: 11.5px; color: #ffd9a8; }
+  .signers { margin-top: auto; padding-top: 6px; font-size: 12px; color: var(--faint); }
+  .signers b { color: var(--muted); font-weight: 500; }
+  .sizes { margin-top: 18px; border-radius: 18px; padding: 16px 18px 14px; box-shadow: inset 0 0 0 1px var(--hair); background: rgba(255,255,255,0.02); }
+  .sizes .hd { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+  .sizes .hd b { font-size: 14px; font-weight: 600; }
+  .sizes .hd span { font-size: 12px; color: var(--faint); }
+  .bar { display: grid; grid-template-columns: 112px 1fr 118px; align-items: center; gap: 12px; margin: 7px 0; }
+  .bar .l { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .bar .l b { color: var(--fg); font-weight: 500; }
+  .track { position: relative; height: 16px; border-radius: 5px; background: repeating-linear-gradient(135deg, rgba(255,255,255,0.05) 0 4px, rgba(255,255,255,0.02) 4px 8px); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.07); }
+  .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 5px; }
+  .fill.u { background: linear-gradient(180deg, #ffe2a3, #e7b54c 60%, #b8842c); }
+  .fill.k { background: linear-gradient(180deg, #ffc285, #fb9a3d 60%, #c46a1c); }
+  .track .limit { position: absolute; right: -1px; top: -5px; bottom: -5px; width: 2px; background: var(--fg); border-radius: 1px; }
+  .bar .v { font-family: "Geist Mono", monospace; font-size: 13px; text-align: left; white-space: nowrap; }
+  .bar .v small { color: var(--faint); font-size: 11px; }
+  .axis { display: grid; grid-template-columns: 112px 1fr 118px; gap: 12px; font-size: 11px; color: var(--faint); margin-top: 2px; }
+  .axis div:nth-child(2) { position: relative; height: 14px; font-family: "Geist Mono", monospace; }
+  .axis div:nth-child(2) span { position: absolute; top: 0; transform: translateX(-50%); white-space: nowrap; }
+  .axis div:nth-child(2) span:first-child { transform: none; }
+  .axis div:nth-child(2) span:last-child { transform: translateX(-100%); color: var(--fg); }
+  .track .spare { position: absolute; right: 8px; top: 50%; transform: translateY(-50%); font-family: "Geist Mono", monospace; font-size: 10.5px; color: var(--faint); }
+  .result { margin-top: 8px; padding: 9px 12px; border-radius: 12px; font-size: 12px; line-height: 1.4; color: var(--muted); border: 1px dashed rgba(231,181,76,0.35); }
+  .result.k { border-color: rgba(251,154,61,0.4); }
+  .result.k b { color: #ffc285; }
+  .result b { color: #ffe2a3; font-weight: 500; }
+  .note { margin-top: 10px; font-size: 11.5px; line-height: 1.45; color: var(--faint); }
+  .note b { color: var(--muted); font-weight: 500; }
+</style>
+</head>
+<body data-ready="0">
+<div id="frame">
+  <header>
+    <h2>One tip, one transaction</h2>
+    <div class="tag">v0 + lookup tables · no custom program</div>
+  </header>
+  <div class="cols">
+    <div class="col">
+      <h3><span class="sw" style="background:var(--gold)"></span>No lock</h3>
+      <p class="lede">Delivered straight to the creator's wallet.</p>
+      <div class="ix"><div class="n">1</div><div><div class="top"><span class="ixn">createIdempotent</span><span class="prog">Associated Token</span></div>
+        <div class="d">Creator's T-Token account (Token-2022). Fan pays the rent if it's new.</div></div></div>
+      <div class="ix key"><div class="n">2</div><div><div class="top"><span class="ixn">swap (ExactIn)</span><span class="prog">Jupiter</span></div>
+        <div class="d">SOL/USDC → T-Token with <code>destinationTokenAccount</code> = creator ATA.</div></div></div>
+      <div class="ix"><div class="n">3</div><div><div class="top"><span class="ixn">memo</span><span class="prog">SPL Memo</span></div>
+        <div class="d"><code>"buymeashare:v0"</code>: how the jar finds tips without a database.</div></div></div>
+      <div class="result">First mainnet tip (2026-09-24): $1 of SOL arrived as <b>0.000959413 T-OpenAI</b>, net of the 0.2% fee.</div>
+      <div class="signers">Signers: <b>fan</b></div>
+    </div>
+    <div class="col">
+      <h3><span class="sw" style="background:var(--brand)"></span>Locked with Jupiter Lock</h3>
+      <p class="lede">Sealed in an escrow; the creator claims after the cliff.</p>
+      <div class="ix"><div class="n">1</div><div><div class="top"><span class="ixn">swap (ExactIn)</span><span class="prog">Jupiter</span></div>
+        <div class="d">SOL/USDC → T-Token into the fan's account.</div></div></div>
+      <div class="ix"><div class="n">2</div><div><div class="top"><span class="ixn">create escrow ATA</span><span class="prog">Associated Token</span></div>
+        <div class="d">Token-2022 account owned by the escrow.</div></div></div>
+      <div class="ix key"><div class="n">3</div><div><div class="top"><span class="ixn">createVestingEscrowV2</span><span class="prog">Jupiter Lock</span></div>
+        <div class="d">recipient = <code>creator</code>, cliff = <code>chain now + lock</code>, cancel = none.</div></div></div>
+      <div class="ix"><div class="n">4</div><div><div class="top"><span class="ixn">memo</span><span class="prog">SPL Memo</span></div>
+        <div class="d"><code>"buymeashare:v0"</code></div></div></div>
+      <div class="result k">The deposit is fee-inclusive: the escrow holds <b>exactly the owed amount</b>, fully backed under the 0.2% fee.</div>
+      <div class="signers">Signers: <b>fan</b> + <b>ephemeral escrow base key</b></div>
+    </div>
+  </div>
+  <div class="sizes">
+    <div class="hd"><b>Measured size vs the 1232-byte limit</b><span>v0 bytes · sent on a Surfpool mainnet fork</span></div>
+    <div id="bars"></div>
+    <div class="axis"><div></div><div><span style="left:0">0 B</span><span style="left:50%">616 B</span><span style="left:100%">1232 B limit</span></div><div></div></div>
+    <div class="note">SOL input adds wSOL wrap/unwrap instructions. <b>Locked + SOL</b> fits only after the shrink ladder (Jupiter <b>maxAccounts=30</b>); its default route was 1578 B. As legacy transactions the first three would be 933 B, 1821 B and 1202 B.</div>
+  </div>
+</div>
+<script>
+// Numbers from spike/README.md, RESULTS table (rows 2-5).
+const LIMIT = 1232;
+const ROWS = [
+  { l: "No lock", pay: "USDC", b: 628, k: "u" },
+  { l: "No lock", pay: "SOL", b: 1088, k: "u" },
+  { l: "Locked", pay: "USDC", b: 897, k: "k" },
+  { l: "Locked", pay: "SOL", b: 1126, k: "k" },
+];
+document.getElementById("bars").innerHTML = ROWS.map((r) => `<div class="bar">
+  <div class="l"><b>${r.l}</b> · ${r.pay}</div>
+  <div class="track"><div class="fill ${r.k}" style="width:${(r.b / LIMIT) * 100}%"></div><div class="limit"></div></div>
+  <div class="v">${r.b} B <small>· ${LIMIT - r.b} free</small></div></div>`).join("");
+document.fonts.ready.then(() => (document.body.dataset.ready = "1"));
+</script>
+</body>
+</html>
