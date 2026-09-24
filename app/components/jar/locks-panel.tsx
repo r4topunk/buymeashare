@@ -23,7 +23,7 @@ function useDemoLocks(): LockListState | null {
   useEffect(() => {
     if (process.env.NODE_ENV !== "development" || !new URLSearchParams(window.location.search).has("demoLocks")) return;
     const now = Math.floor(Date.now() / 1000);
-    const base = { totalRaw: "0", claimedRaw: "0", from: "BV2KTH6X17ueowpX2b58JDJC41WpLYPf8tfr2WTaiNRg", recipient: "demo", depositLamports: 5108640 };
+    const base = { totalRaw: "0", claimedRaw: "0", from: "H4KB32QYTbgHWQathSgSwatGoxHCeeTo7V87X5JiYB9Q", recipient: "demo", depositLamports: 5108640 };
     const locks: LockedTip[] = [
       { ...base, escrow: "demo-a", token: "openai", amount: 0.00481, unlockAt: now + 25, status: "locked", claimable: false },
       { ...base, escrow: "demo-b", token: "spacex", amount: 0.0172, unlockAt: now - 60, status: "claimable", claimable: true },

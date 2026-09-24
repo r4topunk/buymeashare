@@ -3,12 +3,12 @@
 import { useWallet } from "@solana/wallet-adapter-react";
 import { useWalletModal } from "@solana/wallet-adapter-react-ui";
 import { PublicKey } from "@solana/web3.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { toastTx } from "@/components/tx-toast";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { useChainClock, useLockList } from "@/hooks/use-lock-list";
+import { useChainClock, useLockList, type LockListState } from "@/hooks/use-lock-list";
 import { usePrices } from "@/hooks/use-prices";
 import { useSendTransaction } from "@/hooks/use-send-transaction";
 import { formatDateTime, formatSol, formatTokenAmount, formatUsd, shortAddress } from "@/lib/format";
@@ -16,9 +16,34 @@ import { buildCloseEscrowTransaction, errorMessage, type LockedTip } from "@/lib
 import { tokenById } from "@/lib/tokens";
 import * as sfx from "@/lib/fx/audio";
 
+/** Dev-only: `demo-*` escrows from `?demoDeposits=1` simulate the reclaim (nothing is built or sent). */
+const DEMO_ENABLED = process.env.NODE_ENV === "development";
+
+/**
+ * Dev-only `?demoDeposits=1`: fake escrows (one claimed by the creator, one still locked) so the reclaim flow can be
+ * recorded without a keyed RPC. Dead code in production builds.
+ */
+function useDemoDeposits(sender: string): LockListState | null {
+  const [demo, setDemo] = useState<LockListState | null>(null);
+  useEffect(() => {
+    if (!DEMO_ENABLED || !new URLSearchParams(window.location.search).has("demoDeposits")) return;
+    const now = Math.floor(Date.now() / 1000);
+    const base = { claimedRaw: "0", from: sender, recipient: "BV2KTH6X17ueowpX2b58JDJC41WpLYPf8tfr2WTaiNRg", depositLamports: 5108640 };
+    const locks: LockedTip[] = [
+      { ...base, escrow: "demo-a", token: "spacex", amount: 0.0172, totalRaw: "17200000", unlockAt: now - 3600, status: "claimed", claimable: false },
+      { ...base, escrow: "demo-b", token: "kalshi", amount: 0.0221, totalRaw: "22100000", unlockAt: now + 86400 * 180, status: "locked", claimable: false },
+    ];
+    const t = setTimeout(() => setDemo({ kind: "ready", list: { locks, chainTime: now }, skew: 0 }), 0);
+    return () => clearTimeout(t);
+  }, [sender]);
+  return demo;
+}
+
 /** Fan view: escrows this wallet created. Fully claimed ones can be closed to get the rent deposit back. */
 export function DepositsPanel({ sender }: { sender: string }) {
-  const { state, refresh } = useLockList(sender, "sender");
+  const { state: live, refresh } = useLockList(sender, "sender");
+  const demo = useDemoDeposits(sender);
+  const state = demo ?? live;
   const chainNow = useChainClock(state.kind === "ready" ? state.skew : null);
   const { prices } = usePrices();
   const solUsd = prices?.solUsd ?? null;
@@ -117,9 +142,20 @@ function ReclaimButton({ lock, sender, onDone }: { lock: LockedTip; sender: stri
   const { setVisible } = useWalletModal();
   const sendTx = useSendTransaction();
   const [busy, setBusy] = useState(false);
+  const [demoDone, setDemoDone] = useState(false);
   const isSender = publicKey?.toBase58() === sender;
+  const demo = DEMO_ENABLED && lock.escrow.startsWith("demo-");
 
   async function reclaim() {
+    if (demo) {
+      setBusy(true);
+      await new Promise((r) => setTimeout(r, 1400));
+      setBusy(false);
+      setDemoDone(true);
+      toast.success(`Deposit reclaimed: ${formatSol(lock.depositLamports / 1e9)}`);
+      sfx.chime();
+      return;
+    }
     if (!publicKey) return setVisible(true);
     if (!isSender) return toast.error("Connect the wallet that sent this tip to reclaim its deposit.");
     setBusy(true);
@@ -137,8 +173,8 @@ function ReclaimButton({ lock, sender, onDone }: { lock: LockedTip; sender: stri
   }
 
   return (
-    <Button size="sm" disabled={busy || (publicKey != null && !isSender)} onClick={reclaim}>
-      {busy ? "Reclaiming…" : "Reclaim deposit"}
+    <Button size="sm" disabled={busy || demoDone || (!demo && publicKey != null && !isSender)} onClick={reclaim}>
+      {busy ? "Reclaiming…" : demoDone ? "Reclaimed" : "Reclaim deposit"}
     </Button>
   );
 }

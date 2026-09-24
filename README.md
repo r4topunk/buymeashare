@@ -1,5 +1,7 @@
 # Buy Me a Share
 
+![Buy Me a Share: tip a creator, they get OpenAI pre-IPO exposure](docs/images/hero.png)
+
 **Tip a creator $1 or more and it lands in their wallet as T-OpenAI, a Tessera pre-IPO T-Token, in a single Solana transaction.**
 
 Built for the Solana Stocklana hackathon: Consumer track + Tessera bounty. Production domain: `buymeashare.r4to.com` (see [Deploy](#deploy)).
@@ -15,6 +17,9 @@ Built for the Solana Stocklana hackathon: Consumer track + Tessera bounty. Produ
 | The idea | Keep the tip habit and change what arrives. The tip reaches the creator as T-OpenAI / T-Kalshi / T-SpaceX, not as cash. "It's Buy Me a Coffee, but the coffee is OpenAI pre-IPO exposure." |
 
 ## How it works
+
+![How a tip works](docs/images/how-it-works.png)
+
 
 1. The creator pastes their wallet on `/` and gets a link: `/tip/<wallet>?name=&x=`. No signup and no database, because the link is the wallet.
 2. The fan opens the link, picks a token (T-OpenAI, T-Kalshi, T-SpaceX), an amount ($1 minimum) and pays with SOL or USDC.
@@ -51,6 +56,10 @@ sequenceDiagram
 
 ## Why Solana
 
+![One tip, one transaction](docs/images/one-transaction.png)
+*The instructions inside the single v0 transaction, unlocked and locked, with measured sizes against the 1232-byte limit.*
+
+
 | Property | What it enables here |
 |---|---|
 | 1232 B v0 transactions + address lookup tables | Swap + deliver (628 B USDC / 1088 B SOL) or swap + lock (897 B / 1126 B) fit in **one** transaction, so the flow works as a single Blink click |
@@ -63,6 +72,10 @@ sequenceDiagram
 
 ## Features
 
+![The app](docs/images/screenshots.png)
+*Tip page, lock panel with the Tessera warning, desktop jar (dev demo animation) and the share card.*
+
+
 - Tip page with token picker, amount, SOL/USDC, optional lock (days/months/years, up to 5 years)
 - Creator jar: holdings, tip history, locked tips with a Claim button gated on the **chain** clock
 - Fan deposits page: reclaim the escrow rent after the creator claims
@@ -72,6 +85,9 @@ sequenceDiagram
 - Compliance copy baked in: Tessera notice, visible lock warning, "includes 0.2% token transfer fee", unverified name badge
 
 ## What's verified
+
+![What's verified](docs/images/verified.png)
+
 
 | Check | Result |
 |---|---|
@@ -83,6 +99,10 @@ sequenceDiagram
 Measured numbers and open questions: [docs/feasibility.md](docs/feasibility.md).
 
 ## Legal / compliance constraints
+
+![Locking a tip](docs/images/lock-lifecycle.png)
+*Lock lifecycle and why the app warns about Tessera's 90-day redemption window whenever a lock is selected.*
+
 
 | Constraint (Tessera Terms, revised 28 Aug 2026) | Product rule |
 |---|---|

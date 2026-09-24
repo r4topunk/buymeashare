@@ -3,7 +3,7 @@
 TL;DR: the full flow works in **one v0 transaction** (swap + lock + memo, 897 B for USDC input,
 1126-1127 B for SOL input). It ran end to end on a Surfpool mainnet fork: swap, lock, claim
 after the cliff, and close to recover rent. The escrow stays **fully backed** under the 0.2% Token-2022 fee because
-`createVestingEscrowV2` pulls a fee-inclusive amount from the sender. Nothing has been sent on real mainnet.
+`createVestingEscrowV2` pulls a fee-inclusive amount from the sender. Spike scripts never sent to real mainnet (the app later sent the first real tip on 2026-09-24; see ../README.md).
 
 ## Setup
 
