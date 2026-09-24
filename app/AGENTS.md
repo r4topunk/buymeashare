@@ -55,7 +55,7 @@ Next 16 differs from older versions: `params`/`searchParams` are Promises, `Page
 | `GET /api/prices` | Price snapshot (Tessera mark, Jupiter DEX, SOL/USD), cached 30s |
 | `GET /api/jar/[wallet]` | Jar JSON (holdings, tagged tips, errors) |
 | `GET /api/locks/[wallet]?role=recipient\|sender` | Jupiter Lock escrows for a creator (default) or a fan, read server-side with `RPC_URL`. `503 {code:"RPC_UNSUPPORTED"}` if the RPC refuses `getProgramAccounts` |
-| `GET /api/og?wallet=&name=&size=card\|square` | Share card (1200x630) or square Blink icon (600x600) |
+| `GET /api/og?wallet=&name=&token=&size=card\|square` | Share card (1200x630) or square Blink icon (600x600): dark room, glass jar with the holdings poured in as coins (`app/api/og/art.tsx`), serif total. Fonts are bundled TTFs in `assets/og/` (Satori reads no woff2). Falls back to the empty jar if the jar read fails |
 | `GET/POST /api/actions/tip/[wallet]` | Solana Action. One "Tip" button; params `token` (select), `amount` (number), `payWith` (select SOL/USDC), `lockAmount` (number, optional), `lockUnit` (select none/days/months/years, + demo when enabled). POST `{account}` → base64 v0 tx (locked tips partially signed by the escrow base key); `message` carries the Tessera lock warning when locked |
 | `GET /actions.json` | Maps `/tip/*` to the Action API |
 
