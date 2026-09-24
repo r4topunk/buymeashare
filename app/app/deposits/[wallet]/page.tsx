@@ -14,10 +14,10 @@ export async function generateMetadata({ params }: PageProps<"/deposits/[wallet]
 export default async function DepositsPage({ params }: PageProps<"/deposits/[wallet]">) {
   const wallet = parseWalletParam((await params).wallet);
   return (
-    <div className="flex flex-col gap-8">
+    <div className="mx-auto flex w-full max-w-2xl flex-col gap-8 lg:pt-6">
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-medium text-brand">Fan view</p>
-        <h1 className="text-2xl font-semibold tracking-tight">Your locked-tip deposits</h1>
+        <p className="text-[11px] font-medium tracking-[0.14em] text-brand uppercase">Fan view</p>
+        <h1 className="font-display text-[36px] leading-none tracking-[-0.01em]">Your locked-tip deposits</h1>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <a href={explorerAccount(wallet)} target="_blank" rel="noreferrer" className="font-mono text-xs hover:text-foreground" title={wallet}>
             {shortAddress(wallet, 4)}

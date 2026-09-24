@@ -1,3 +1,4 @@
+import { Coin } from "@/components/fx/coin";
 import { formatTokenAmount, formatUsd } from "@/lib/format";
 import type { Jar } from "@/lib/jar/types";
 import type { PriceSnapshot } from "@/lib/prices/types";
@@ -14,17 +15,18 @@ function priceLine(p: PriceSnapshot["tokens"][keyof PriceSnapshot["tokens"]] | u
 
 export function Holdings({ jar, prices }: { jar: Jar; prices: PriceSnapshot | null }) {
   return (
-    <ul className="divide-y divide-border rounded-xl border bg-card">
+    <ul className="surface divide-y divide-white/[0.06] rounded-2xl">
       {T_TOKENS.map((t) => {
         const h = jar.holdings.find((x) => x.token === t.id);
         const amount = h?.amount ?? 0;
         const p = prices?.tokens[t.id];
         const value = p?.usd != null ? amount * p.usd : null;
         return (
-          <li key={t.id} className="flex items-center justify-between gap-3 px-4 py-3">
-            <div className="min-w-0">
+          <li key={t.id} className="flex items-center gap-3 px-4 py-3.5">
+            <Coin token={t.id} size={34} dim={amount === 0} />
+            <div className="min-w-0 flex-1">
               <div className="font-medium">{t.symbol}</div>
-              <div className="text-xs text-muted-foreground">
+              <div className="text-xs text-muted-foreground text-pretty">
                 {t.company} pre-IPO exposure · {priceLine(p)}
               </div>
             </div>

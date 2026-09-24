@@ -116,6 +116,20 @@ Browser gotchas: `@solana/spl-token` uses the global `Buffer` (installed by `lib
 
 `NEXT_PUBLIC_LOCK_SECONDS` is gone: the fan picks the lock duration.
 
+## UI / effects layer ("the jar")
+
+One deliberate dark theme (tokens on `:root` in `app/globals.css`; `html` carries `.dark`). The concept: a glass jar the creator's coins live in; a confirmed tip flies in as a coin, lands with a clink, confetti fires and the total counts up. Locked tips are sealed coins (amber ring + padlock) that break open on claim.
+
+| Piece | Where |
+|---|---|
+| Jar physics + canvas render (framework-agnostic, loop parks at rest, reduced motion = settled + no loop) | `components/jar/vessel-engine.ts`, geometry shared with the SVG glass in `vessel-geometry.ts` |
+| Jar component / page context (coin flight, drop, confetti, unseal) | `components/jar/vessel.tsx`, `vessel-context.tsx`, `jar-hero.tsx`, `coins.ts` (holdings -> coins, log scale) |
+| Sounds (Web Audio synth, no files; no AudioContext before a gesture; mute persisted in localStorage `bmas:sound`) | `lib/fx/audio.ts`, toggle `components/fx/sound-toggle.tsx` |
+| Haptics, metals, fx hooks | `lib/fx/haptics.ts`, `lib/fx/metals.ts`, `hooks/use-fx.ts` |
+| Tip form pieces (token coins, odometer amount, hardware key, tx steps) | `components/tip/*`, `components/fx/*` |
+
+Celebration fires ONLY after `sendTx` resolves (confirmed). Dev-only demo flags (dead code in production builds): `/tip/<w>?demoSuccess=auto` (also `=1` click-to-run, `=error`, `&demoLock=1`), `/jar/<w>?demoLocks=1` (fake escrows + simulated claim). Nothing is built or sent in demo mode.
+
 ## Product rules
 
 - Lock: "No lock" by default, or an integer + days/months/years (month = 30 days, year = 365 days), max 5 years. Locked tip minimum $5 (unlocked $1).

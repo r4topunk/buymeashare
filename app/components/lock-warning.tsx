@@ -6,12 +6,12 @@ import { TESSERA_LOCK_WARNING, TESSERA_TERMS_URL } from "@/lib/brand";
 export function LockWarning() {
   const [title, ...rest] = TESSERA_LOCK_WARNING.split(": ");
   return (
-    <Alert className="border-amber-500/50 bg-amber-50 text-amber-950 dark:bg-amber-950/30 dark:text-amber-100">
-      <TriangleAlertIcon />
-      <AlertTitle>{title}</AlertTitle>
-      <AlertDescription className="text-amber-900 dark:text-amber-100/90">
+    <Alert className="rounded-2xl border-amber-300/25 bg-amber-300/[0.07] px-3.5 py-3 text-amber-100">
+      <TriangleAlertIcon className="text-amber-300" />
+      <AlertTitle className="text-amber-100">{title}</AlertTitle>
+      <AlertDescription className="text-amber-100/80 text-pretty">
         {rest.join(": ")}{" "}
-        <a href={TESSERA_TERMS_URL} target="_blank" rel="noreferrer">
+        <a href={TESSERA_TERMS_URL} target="_blank" rel="noreferrer" className="text-amber-100 underline underline-offset-2">
           See Tessera terms.
         </a>
       </AlertDescription>
