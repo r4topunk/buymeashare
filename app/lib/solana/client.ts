@@ -1,10 +1,10 @@
 import { Connection } from "@solana/web3.js";
-import { publicEnv } from "@/lib/env";
+import { clientRpcUrl } from "@/lib/solana/connection";
 
 let fallback: Connection | undefined;
 
-/** Connection used by the tx builders when the caller passes none (NEXT_PUBLIC_RPC_URL). */
+/** Connection used by the tx builders when the caller passes none (the /api/rpc proxy in the browser). */
 export function defaultConnection(): Connection {
-  fallback ??= new Connection(publicEnv.NEXT_PUBLIC_RPC_URL, "confirmed");
+  fallback ??= new Connection(clientRpcUrl(), "confirmed");
   return fallback;
 }

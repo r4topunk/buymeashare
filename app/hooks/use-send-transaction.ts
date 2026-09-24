@@ -1,9 +1,26 @@
 "use client";
 
 import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import type { Keypair } from "@solana/web3.js";
+import type { Connection, Keypair } from "@solana/web3.js";
 import { useCallback } from "react";
 import type { BuiltTransaction } from "@/lib/tip/types";
+
+/**
+ * HTTP-only confirmation. The browser talks to the /api/rpc proxy, which has no websocket, so
+ * connection.confirmTransaction (signature subscription) can't be used here.
+ */
+async function confirmByPolling(connection: Connection, signature: string, lastValidBlockHeight: number) {
+  for (;;) {
+    const { value } = await connection.getSignatureStatuses([signature]);
+    const status = value[0];
+    if (status?.err) throw new Error(`Transaction failed on-chain: ${JSON.stringify(status.err)}`);
+    if (status?.confirmationStatus === "confirmed" || status?.confirmationStatus === "finalized") return;
+    if ((await connection.getBlockHeight("confirmed")) > lastValidBlockHeight) {
+      throw new Error("Transaction expired before confirmation. Please try again.");
+    }
+    await new Promise((r) => setTimeout(r, 1500));
+  }
+}
 
 function sameBytes(a: Uint8Array, b: Uint8Array) {
   return a.length === b.length && a.every((v, i) => v === b[i]);
@@ -31,11 +48,7 @@ export function useSendTransaction() {
         signature = await sendTransaction(built.transaction, connection);
       }
       onSent?.(signature);
-      const res = await connection.confirmTransaction(
-        { signature, blockhash: built.blockhash, lastValidBlockHeight: built.lastValidBlockHeight },
-        "confirmed",
-      );
-      if (res.value.err) throw new Error(`Transaction failed on-chain: ${JSON.stringify(res.value.err)}`);
+      await confirmByPolling(connection, signature, built.lastValidBlockHeight);
       return signature;
     },
     [connection, publicKey, signTransaction, sendTransaction],
