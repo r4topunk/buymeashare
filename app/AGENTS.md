@@ -52,6 +52,7 @@ Next 16 differs from older versions: `params`/`searchParams` are Promises, `Page
 | `/tip/[wallet]?name=&x=&token=` | Tip form (token, amount, pay with, optional lock) + the creator's jar. OG image via `/api/og` |
 | `/jar/[wallet]` | Creator view: holdings, tip history, locked tips + Claim (disabled until the cliff, by chain clock) |
 | `/deposits/[wallet]` | Fan view: escrows this wallet created. Fully claimed → "Reclaim deposit" (closeVestingEscrow); others listed as pending |
+| `POST /api/rpc` | Same-origin JSON-RPC proxy for the browser (the public mainnet RPC rejects browser-origin requests and a keyed URL must stay server-side). Forwards to `RPC_URL` only an allowlist of methods (account/token reads, blockhash, signatures, `simulateTransaction`, `sendTransaction`; **no** `getProgramAccounts`), max 20 calls per batch, 64 KB body; else 403/400/413. HTTP only, no websocket |
 | `GET /api/prices` | Price snapshot (Tessera mark, Jupiter DEX, SOL/USD), cached 30s |
 | `GET /api/jar/[wallet]` | Jar JSON (holdings, tagged tips, errors) |
 | `GET /api/locks/[wallet]?role=recipient\|sender` | Jupiter Lock escrows for a creator (default) or a fan, read server-side with `RPC_URL`. `503 {code:"RPC_UNSUPPORTED"}` if the RPC refuses `getProgramAccounts` |
@@ -106,9 +107,9 @@ Browser gotchas: `@solana/spl-token` uses the global `Buffer` (installed by `lib
 
 | Var | Default | Notes |
 |---|---|---|
-| `NEXT_PUBLIC_RPC_URL` | `https://api.mainnet-beta.solana.com` | Wallet + client RPC (tx building in the browser). Public endpoint rate-limits; use a keyed RPC for demos |
-| `RPC_URL` | = `NEXT_PUBLIC_RPC_URL` | Server-only RPC: jar/OG reads, `/api/locks` and the Blink POST. **Locked tips and deposits need `getProgramAccounts`**: use a keyed RPC (Helius, Triton, QuickNode). Without it the lock panels show "can't be read on this RPC" instead of failing |
-| `NEXT_PUBLIC_SITE_URL` | `VERCEL_PROJECT_PRODUCTION_URL` → `VERCEL_URL` → `http://localhost:3000` | Absolute URLs in metadata/OG/Blink messages |
+| `NEXT_PUBLIC_RPC_URL` | `https://api.mainnet-beta.solana.com` | **Not used by the browser**: client Connections always point at the same-origin `/api/rpc` proxy (`clientRpcUrl()` in `lib/solana/connection.ts`). Only the SSR fallback of `clientRpcUrl()`, the fallback for `RPC_URL`, and the Solscan cluster hint in `lib/format.ts` (localhost → custom cluster). Inlined in the bundle: never put a keyed URL here |
+| `RPC_URL` | = `NEXT_PUBLIC_RPC_URL` | Server-only RPC behind everything: the `/api/rpc` proxy (browser tx building, sending, confirmation), jar/OG reads, `/api/locks` and the Blink POST. Put the keyed RPC here (Helius, Triton, QuickNode). **Locked tips and deposits need `getProgramAccounts`**; without it the lock panels show "can't be read on this RPC" instead of failing |
+| `NEXT_PUBLIC_SITE_URL` | `VERCEL_PROJECT_PRODUCTION_URL` → `VERCEL_URL` → `http://localhost:3000` | Absolute URLs in metadata/OG/Blink messages. Production: `https://buymeashare.r4to.com` |
 | `NEXT_PUBLIC_DEMO_LOCK_SECONDS` | unset | Demo only: adds a "Demo" lock unit (UI + Blink) that locks for exactly N seconds, e.g. `120` for the video. Leave unset in production |
 | `NEXT_PUBLIC_JUPITER_API_URL` | `https://lite-api.jup.ag` | Swap API (`/swap/v1`), called from the browser and the Blink route |
 | `TESSERA_API_URL` | `https://rest-api.tessera.pe/v1/public` | |
