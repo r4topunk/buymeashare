@@ -15,3 +15,4 @@ node_modules/
 *keypair*.json
 id.json
 stocklana-*.json
+.claude/
