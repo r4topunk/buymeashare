@@ -14,6 +14,7 @@ import { useSendTransaction } from "@/hooks/use-send-transaction";
 import { formatDateTime, formatSol, formatTokenAmount, formatUsd, shortAddress } from "@/lib/format";
 import { buildCloseEscrowTransaction, errorMessage, type LockedTip } from "@/lib/tip";
 import { tokenById } from "@/lib/tokens";
+import * as sfx from "@/lib/fx/audio";
 
 /** Fan view: escrows this wallet created. Fully claimed ones can be closed to get the rent deposit back. */
 export function DepositsPanel({ sender }: { sender: string }) {
@@ -22,7 +23,7 @@ export function DepositsPanel({ sender }: { sender: string }) {
   const { prices } = usePrices();
   const solUsd = prices?.solUsd ?? null;
 
-  if (state.kind === "loading") return <div className="h-24 animate-pulse rounded-xl bg-muted" />;
+  if (state.kind === "loading") return <div className="h-24 animate-pulse rounded-2xl bg-white/[0.04]" />;
   if (state.kind === "error") {
     return (
       <Alert variant={state.unsupported ? "default" : "destructive"}>
@@ -50,7 +51,7 @@ export function DepositsPanel({ sender }: { sender: string }) {
         {ready.length === 0 ? (
           <Empty>Nothing to reclaim yet. A deposit comes back once the creator claims the locked tip.</Empty>
         ) : (
-          <ul className="divide-y divide-border rounded-xl border bg-card">
+          <ul className="surface divide-y divide-white/[0.06] rounded-2xl">
             {ready.map((l) => (
               <Row key={l.escrow} lock={l} solUsd={solUsd} subtitle={`claimed by ${shortAddress(l.recipient)}`}>
                 <ReclaimButton lock={l} sender={sender} onDone={refresh} />
@@ -65,7 +66,7 @@ export function DepositsPanel({ sender }: { sender: string }) {
         {pending.length === 0 ? (
           <Empty>No locked tips waiting for a claim.</Empty>
         ) : (
-          <ul className="divide-y divide-border rounded-xl border bg-card">
+          <ul className="surface divide-y divide-white/[0.06] rounded-2xl">
             {pending.map((l) => (
               <Row
                 key={l.escrow}
@@ -108,7 +109,7 @@ function Row({ lock, solUsd, subtitle, children }: { lock: LockedTip; solUsd: nu
 }
 
 function Empty({ children }: { children: React.ReactNode }) {
-  return <div className="rounded-xl border border-dashed px-4 py-6 text-center text-sm text-muted-foreground">{children}</div>;
+  return <div className="rounded-2xl border border-dashed border-white/10 px-4 py-7 text-center text-sm text-muted-foreground">{children}</div>;
 }
 
 function ReclaimButton({ lock, sender, onDone }: { lock: LockedTip; sender: string; onDone: () => void }) {
@@ -126,6 +127,7 @@ function ReclaimButton({ lock, sender, onDone }: { lock: LockedTip; sender: stri
       const built = await buildCloseEscrowTransaction({ sender: publicKey, escrow: new PublicKey(lock.escrow) });
       const signature = await sendTx(built);
       toastTx(`Deposit reclaimed: ${formatSol(built.refundLamports / 1e9)}`, signature);
+      sfx.chime();
       onDone();
     } catch (e) {
       toast.error(errorMessage(e));

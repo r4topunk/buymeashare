@@ -3,6 +3,7 @@
 import { ConnectionProvider, WalletProvider } from "@solana/wallet-adapter-react";
 import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
 import "@solana/wallet-adapter-react-ui/styles.css";
+import { MotionConfig } from "motion/react";
 import { Toaster } from "@/components/ui/sonner";
 import { clientRpcUrl } from "@/lib/solana/connection";
 
@@ -15,8 +16,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ConnectionProvider endpoint={clientRpcUrl()} config={{ commitment: "confirmed" }}>
       <WalletProvider wallets={[]} autoConnect>
         <WalletModalProvider>
-          {children}
-          <Toaster position="top-center" />
+          {/* Motion honours prefers-reduced-motion for transforms/layout; opacity fades still run. */}
+          <MotionConfig reducedMotion="user">
+            {children}
+            <Toaster position="top-center" theme="dark" />
+          </MotionConfig>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
