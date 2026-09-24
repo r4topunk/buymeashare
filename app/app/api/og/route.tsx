@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import { z } from "zod";
-import { holdingCoins } from "@/components/jar/coins";
+import { jarCoins } from "@/components/jar/coins";
 import { PRODUCT_NAME } from "@/lib/brand";
 import { METALS } from "@/lib/fx/metals";
 import { formatTokenAmount, formatUsd, shortAddress } from "@/lib/format";
@@ -86,7 +86,7 @@ export async function GET(req: Request) {
   const held = jar ? T_TOKENS.map((t) => ({ t, amount: jar.holdings.find((h) => h.token === t.id)?.amount ?? 0 })).filter((r) => r.amount > 0) : [];
   const total = jar && held.length ? jarTotalUsd(jar, prices) : null;
   const empty = headline.kind === "empty" && !held.length;
-  const coins = jar ? holdingCoins(jar.holdings, prices) : [];
+  const coins = jar ? jarCoins(jar, prices) : [];
 
   const square = size === "square";
   const W = square ? 600 : 1200;
