@@ -9,23 +9,27 @@ import { useChainClock, useLockList, type LockListState } from "@/hooks/use-lock
 import { formatDateTime, formatTokenAmount, shortAddress } from "@/lib/format";
 import type { LockedTip } from "@/lib/tip/types";
 import { tokenById } from "@/lib/tokens";
+import { DEMO_FLAGS } from "@/lib/demo";
 import { cn } from "@/lib/utils";
 import { ClaimButton } from "./claim-button";
 import { lockedCoins } from "./coins";
 import { useVessel } from "./vessel-context";
 
 /**
- * Dev-only `?demoLocks=1`: fake escrows (one unlocking in 25 s, one already claimable) so the sealed coins,
+ * Dev-only `?demoLocks=1`: fake escrows (one unlocking in 25 s, or N s with `?demoLocks=N`, one already claimable) so the sealed coins,
  * countdown and claim animation can be screenshotted without a keyed RPC. Dead code in production builds.
  */
 function useDemoLocks(): LockListState | null {
   const [demo, setDemo] = useState<LockListState | null>(null);
   useEffect(() => {
-    if (process.env.NODE_ENV !== "development" || !new URLSearchParams(window.location.search).has("demoLocks")) return;
+    const param = new URLSearchParams(window.location.search).get("demoLocks");
+    if (!DEMO_FLAGS || param === null) return;
+    // `?demoLocks=110` sets when the first lock opens (seconds); default 25.
+    const firstUnlock = Number(param) > 1 ? Number(param) : 25;
     const now = Math.floor(Date.now() / 1000);
     const base = { totalRaw: "0", claimedRaw: "0", from: "H4KB32QYTbgHWQathSgSwatGoxHCeeTo7V87X5JiYB9Q", recipient: "demo", depositLamports: 5108640 };
     const locks: LockedTip[] = [
-      { ...base, escrow: "demo-a", token: "openai", amount: 0.00481, unlockAt: now + 25, status: "locked", claimable: false },
+      { ...base, escrow: "demo-a", token: "openai", amount: 0.004753, unlockAt: now + firstUnlock, status: "locked", claimable: false },
       { ...base, escrow: "demo-b", token: "spacex", amount: 0.0172, unlockAt: now - 60, status: "claimable", claimable: true },
       { ...base, escrow: "demo-c", token: "kalshi", amount: 0.0221, unlockAt: now + 86400 * 180, status: "locked", claimable: false },
     ];

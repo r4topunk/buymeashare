@@ -13,10 +13,13 @@ import * as sfx from "@/lib/fx/audio";
 import { HAPTIC, haptic } from "@/lib/fx/haptics";
 import { formatCountdown } from "@/lib/lock";
 import { buildClaimTransaction, errorMessage, type LockedTip } from "@/lib/tip";
+import { DEMO_FLAGS, demoSign } from "@/lib/demo";
+import { formatTokenAmount } from "@/lib/format";
+import { tokenById } from "@/lib/tokens";
 import { useVessel } from "./vessel-context";
 
 /** Dev-only: `demo-*` escrows from `?demoLocks=1` simulate the claim (nothing is built or sent). */
-const DEMO_ENABLED = process.env.NODE_ENV === "development";
+const DEMO_ENABLED = DEMO_FLAGS;
 
 /**
  * Disabled until the cliff by the CHAIN clock (`chainNow`). Claiming earlier would succeed on-chain but move 0 tokens;
@@ -53,7 +56,8 @@ export function ClaimButton({
   async function claim() {
     if (demo) {
       setBusy(true);
-      await new Promise((r) => setTimeout(r, 1400));
+      await demoSign({ title: "Claim locked tip", rows: [["You receive", `${formatTokenAmount(lock.amount)} ${tokenById(lock.token).symbol}`]] }, 700);
+      await new Promise((r) => setTimeout(r, 900));
       setBusy(false);
       celebrate();
       onClaimed();

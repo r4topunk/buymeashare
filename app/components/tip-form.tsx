@@ -25,6 +25,7 @@ import { usePrices } from "@/hooks/use-prices";
 import { useSendTransaction } from "@/hooks/use-send-transaction";
 import * as sfx from "@/lib/fx/audio";
 import { HAPTIC, haptic } from "@/lib/fx/haptics";
+import { DEMO_FLAGS, demoSign } from "@/lib/demo";
 import { explorerTx, formatDateTime, formatTokenAmount, formatUsd } from "@/lib/format";
 import {
   DEMO_LOCK_SECONDS,
@@ -67,9 +68,9 @@ const LOCKED_PRESETS = [5, 10, 25, 50, 100];
 /**
  * Dev-only simulation of the tip flow for screenshots and the demo video: `?demoSuccess=1` (click Tip),
  * `?demoSuccess=auto` (runs on load), `?demoSuccess=error`, plus `&demoLock=1` to start with a lock.
- * `process.env.NODE_ENV` is inlined at build time, so this is dead code in production builds. No transaction is sent.
+ * Gated by DEMO_FLAGS (dev, or a NEXT_PUBLIC_DEMO_FLAGS=1 build): dead code in normal production builds. No transaction is sent.
  */
-const DEMO_ENABLED = process.env.NODE_ENV === "development";
+const DEMO_ENABLED = DEMO_FLAGS;
 function demoParam(name: string): string | null {
   if (!DEMO_ENABLED || typeof window === "undefined") return null;
   return new URLSearchParams(window.location.search).get(name);
@@ -186,7 +187,12 @@ export function TipForm({
     setStatus({ kind: "building" });
     await sleep(700);
     setStatus({ kind: "signing" });
-    await sleep(1300);
+    const rows: [string, string][] = [
+      ["You pay", quote.payAmount != null ? `${formatTokenAmount(quote.payAmount)} ${pay}` : formatUsd(usd)],
+      [`${creatorLabel} gets`, quote.tokensOut != null ? `≈ ${formatTokenAmount(quote.tokensOut)} ${token.symbol}` : token.symbol],
+    ];
+    if (lockLabel) rows.push(["Locked for", lockLabel], ["Refundable deposit", `${ESCROW_DEPOSIT_SOL.toFixed(4)} SOL`]);
+    await demoSign({ title: lockLabel ? "Approve locked tip" : "Approve tip", rows }, 1300);
     setStatus({ kind: "confirming" });
     await sleep(1400);
     if (kind === "error") {

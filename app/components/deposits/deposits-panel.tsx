@@ -15,9 +15,10 @@ import { formatDateTime, formatSol, formatTokenAmount, formatUsd, shortAddress }
 import { buildCloseEscrowTransaction, errorMessage, type LockedTip } from "@/lib/tip";
 import { tokenById } from "@/lib/tokens";
 import * as sfx from "@/lib/fx/audio";
+import { DEMO_FLAGS, demoSign } from "@/lib/demo";
 
 /** Dev-only: `demo-*` escrows from `?demoDeposits=1` simulate the reclaim (nothing is built or sent). */
-const DEMO_ENABLED = process.env.NODE_ENV === "development";
+const DEMO_ENABLED = DEMO_FLAGS;
 
 /**
  * Dev-only `?demoDeposits=1`: fake escrows (one claimed by the creator, one still locked) so the reclaim flow can be
@@ -149,7 +150,8 @@ function ReclaimButton({ lock, sender, onDone }: { lock: LockedTip; sender: stri
   async function reclaim() {
     if (demo) {
       setBusy(true);
-      await new Promise((r) => setTimeout(r, 1400));
+      await demoSign({ title: "Reclaim deposit", rows: [["You receive", formatSol(lock.depositLamports / 1e9)]] }, 700);
+      await new Promise((r) => setTimeout(r, 900));
       setBusy(false);
       setDemoDone(true);
       toast.success(`Deposit reclaimed: ${formatSol(lock.depositLamports / 1e9)}`);

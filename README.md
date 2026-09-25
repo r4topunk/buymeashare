@@ -4,6 +4,10 @@
 
 **Tip a creator $1 or more and it lands in their wallet as T-OpenAI, a Tessera pre-IPO T-Token, in a single Solana transaction.**
 
+**▶ Demo video (2:26):** [youtu.be/H-3_QEXZUw4](https://youtu.be/H-3_QEXZUw4) · **Live app:** [buymeashare.r4to.com](https://buymeashare.r4to.com)
+
+[![Buy Me a Share demo video](https://img.youtube.com/vi/H-3_QEXZUw4/maxresdefault.jpg)](https://youtu.be/H-3_QEXZUw4)
+
 Built for the Solana Stocklana hackathon: Consumer track + Tessera bounty. Production domain: `buymeashare.r4to.com` (see [Deploy](#deploy)).
 
 > T-Tokens are issued by Tessera. They are Stablecoin Loan Tokens, **not equity**, and are not available to U.S. persons or residents of excluded jurisdictions. See [docs/tessera-terms.md](docs/tessera-terms.md) and the [Tessera Terms](https://terms.tessera.pe/terms-and-conditions).

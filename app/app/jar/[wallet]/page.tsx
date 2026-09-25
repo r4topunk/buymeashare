@@ -11,6 +11,7 @@ import { MyDepositsLink } from "@/components/deposits/my-deposits-link";
 import { TesseraNotice } from "@/components/tessera-notice";
 import { Button } from "@/components/ui/button";
 import { shortAddress } from "@/lib/format";
+import { demoJar } from "@/lib/jar/demo";
 import { getJar } from "@/lib/jar/getJar";
 import { getPrices } from "@/lib/prices";
 import { parseTipQuery, parseWalletParam } from "@/lib/route-params";
@@ -24,10 +25,12 @@ export async function generateMetadata({ params }: PageProps<"/jar/[wallet]">): 
 
 export default async function JarPage({ params, searchParams }: PageProps<"/jar/[wallet]">) {
   const wallet = parseWalletParam((await params).wallet);
-  const q = parseTipQuery(await searchParams);
+  const sp = await searchParams;
+  const q = parseTipQuery(sp);
   const link = tipPath(wallet, { name: q.name, x: q.x });
   const prices = await getPrices().catch(() => null);
-  const jar = getJar(wallet).catch(() => null);
+  const demo = demoJar(wallet, sp.demoJar);
+  const jar = demo ? Promise.resolve(demo) : getJar(wallet).catch(() => null);
 
   return (
     <VesselProvider>
@@ -45,7 +48,7 @@ export default async function JarPage({ params, searchParams }: PageProps<"/jar/
         <div className="flex flex-col gap-10">
           <LocksPanel creator={wallet} />
           <Suspense fallback={<JarSkeleton />}>
-            <JarSection wallet={wallet} title="Holdings" />
+            <JarSection wallet={wallet} title="Holdings" jar={demo ?? undefined} />
           </Suspense>
           <div className="flex flex-col gap-4">
             <MyDepositsLink />

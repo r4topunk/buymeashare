@@ -129,7 +129,7 @@ One deliberate dark theme (tokens on `:root` in `app/globals.css`; `html` carrie
 | Haptics, metals, fx hooks | `lib/fx/haptics.ts`, `lib/fx/metals.ts`, `hooks/use-fx.ts` |
 | Tip form pieces (token coins, odometer amount, hardware key, tx steps) | `components/tip/*`, `components/fx/*` |
 
-Celebration fires ONLY after `sendTx` resolves (confirmed). Dev-only demo flags (dead code in production builds): `/tip/<w>?demoSuccess=auto` (also `=1` click-to-run, `=error`, `&demoLock=1`), `/jar/<w>?demoLocks=1` (fake escrows + simulated claim). Nothing is built or sent in demo mode.
+Celebration fires ONLY after `sendTx` resolves (confirmed). Demo flags, gated by `DEMO_FLAGS` in `lib/demo.ts` (on in `next dev` or in a build made with `NEXT_PUBLIC_DEMO_FLAGS=1`, which is only for recording the video; never set it on Vercel, so normal production builds drop them). Simulated signatures go through `demoSign()`, which a recording wallet can hook (`window.__bmasDemoSign`): `/tip/<w>?demoSuccess=auto` (also `=1` click-to-run, `=error`, `&demoLock=1`), `/jar/<w>?demoLocks=1` (fake escrows + simulated claim; `=N` opens the first one in N s), `/jar/<w>?demoJar=1` (jar holding one $3 T-OpenAI tip), `/deposits/<w>?demoDeposits=1` (one deposit ready to reclaim + one pending, simulated reclaim). The demo video is recorded from these: see `../video/`. Nothing is built or sent in demo mode.
 
 ## Product rules
 

@@ -3,12 +3,24 @@ import { TipHistory } from "@/components/jar/tip-history";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatUsd } from "@/lib/format";
 import { getJar } from "@/lib/jar/getJar";
+import type { Jar } from "@/lib/jar/types";
 import { jarTotalUsd } from "@/lib/jar/summary";
 import { getPrices } from "@/lib/prices";
 
 /** Server component: reads the jar from mainnet. Wrap in <Suspense fallback={<JarSkeleton />}>. */
-export async function JarSection({ wallet, title = "Jar", showHoldings = true }: { wallet: string; title?: string; showHoldings?: boolean }) {
-  const [jar, prices] = await Promise.all([getJar(wallet), getPrices().catch(() => null)]);
+export async function JarSection({
+  wallet,
+  title = "Jar",
+  showHoldings = true,
+  jar: given,
+}: {
+  wallet: string;
+  title?: string;
+  showHoldings?: boolean;
+  /** Pre-read jar (dev demo fixture); otherwise read from mainnet. */
+  jar?: Jar;
+}) {
+  const [jar, prices] = await Promise.all([given ?? getJar(wallet), getPrices().catch(() => null)]);
   const total = jarTotalUsd(jar, prices);
   return (
     <section className="flex flex-col gap-4">

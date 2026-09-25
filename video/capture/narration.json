@@ -1,0 +1,158 @@
+[
+  {
+    "id": "opening",
+    "cardOnly": true,
+    "card": {
+      "label": "Stocklana · Consumer + Tessera",
+      "title": "Buy Me a Share",
+      "subtitle": "Tip a creator. They get pre-IPO exposure."
+    },
+    "text": "This is Buy Me a Share.",
+    "voSeconds": 1.85,
+    "voice": "male"
+  },
+  {
+    "id": "p1-why",
+    "part": "Part 1 · Creator",
+    "step": "Why",
+    "card": {
+      "label": "Part 1",
+      "title": "The creator",
+      "subtitle": "Maya sets up her tip jar"
+    },
+    "text": "I'm a creator, and this is how I receive tips: my fans send me Tessera pre-IPO tokens, not cash.",
+    "voSeconds": 6.65,
+    "voice": "female"
+  },
+  {
+    "id": "p1-connect",
+    "part": "Part 1 · Creator",
+    "step": "Connect wallet",
+    "text": "My Solana wallet is my account. No signup, no password.",
+    "voSeconds": 3.99,
+    "voice": "female"
+  },
+  {
+    "id": "p1-link",
+    "part": "Part 1 · Creator",
+    "step": "Create the link",
+    "text": "I add my name and my X handle, and my tip link is ready. The link is my wallet, so there's no database.",
+    "voSeconds": 6.47,
+    "voice": "female"
+  },
+  {
+    "id": "p1-share",
+    "part": "Part 1 · Creator",
+    "step": "Share it",
+    "text": "My followers see this card on X, and the same link works as a Solana Blink.",
+    "voSeconds": 4.51,
+    "voice": "female"
+  },
+  {
+    "id": "p2-open",
+    "part": "Part 2 · Fan",
+    "step": "Open the link",
+    "card": {
+      "label": "Part 2",
+      "title": "The fan",
+      "subtitle": "Tipping Maya in one transaction"
+    },
+    "text": "Now I'm the fan. I open the creator's link: the jar is empty.",
+    "voSeconds": 5.39,
+    "voice": "male"
+  },
+  {
+    "id": "p2-connect",
+    "part": "Part 2 · Fan",
+    "step": "Connect wallet",
+    "text": "One click, and my wallet is connected.",
+    "voSeconds": 3.17,
+    "voice": "male"
+  },
+  {
+    "id": "p2-choose",
+    "part": "Part 2 · Fan",
+    "step": "Choose the tip",
+    "text": "I pick the pre-IPO token I want to give, at its live Jupiter price: three dollars in USDC.",
+    "voSeconds": 8.16,
+    "voice": "male"
+  },
+  {
+    "id": "p2-tip",
+    "part": "Part 2 · Fan",
+    "step": "Approve",
+    "text": "I approve once. Jupiter swaps my USDC into the token and sends it straight to the creator.",
+    "voSeconds": 7.18,
+    "voice": "male"
+  },
+  {
+    "id": "p2-lock",
+    "part": "Part 2 · Fan",
+    "step": "Lock a tip",
+    "text": "I can also lock a tip, so the creator holds it. Before approving, I see Tessera's redemption warning and a small refundable deposit. Here, the lock is two minutes.",
+    "voSeconds": 12.64,
+    "voice": "male"
+  },
+  {
+    "id": "p3-jar",
+    "part": "Part 3 · Creator",
+    "step": "Open my jar",
+    "card": {
+      "label": "Part 3",
+      "title": "Payday",
+      "subtitle": "Maya claims her tips"
+    },
+    "text": "Back on my side, I open my jar: what I've received, my tip history, and the locked tip counting down.",
+    "voSeconds": 6.42,
+    "voice": "female"
+  },
+  {
+    "id": "p3-claim",
+    "part": "Part 3 · Creator",
+    "step": "Claim",
+    "text": "When a lock opens, I claim it, and the tokens are mine.",
+    "voSeconds": 3.43,
+    "voice": "female"
+  },
+  {
+    "id": "p3-refund",
+    "part": "Part 3 · Fan",
+    "step": "Reclaim deposit",
+    "text": "And I get my escrow deposit back.",
+    "voSeconds": 2.88,
+    "voice": "male"
+  },
+  {
+    "id": "p4-live",
+    "part": "Part 4 · Mainnet",
+    "step": "Real jar",
+    "card": {
+      "label": "Part 4",
+      "title": "Live on mainnet",
+      "subtitle": "Not a mockup"
+    },
+    "text": "This isn't a mockup. It's live on Solana mainnet: this jar got its first real tip on September 24th, in a single transaction.",
+    "voSeconds": 7.99,
+    "voice": "female"
+  },
+  {
+    "id": "p4-why",
+    "part": "Part 4 · Mainnet",
+    "step": "Why Solana",
+    "text": "Swap, escrow and transfer in one transaction, for a fraction of a cent. Only on Solana.",
+    "voSeconds": 7.47,
+    "voice": "male"
+  },
+  {
+    "id": "closing",
+    "cardOnly": true,
+    "card": {
+      "label": "buymeashare.r4to.com",
+      "title": "Buy Me a Share",
+      "subtitle": "Tip a creator in pre-IPO exposure, with one link."
+    },
+    "text": "Buy Me a Share. Tip a creator in pre-IPO exposure, with one link.",
+    "voSeconds": 5.79,
+    "voice": "male"
+  }
+]
